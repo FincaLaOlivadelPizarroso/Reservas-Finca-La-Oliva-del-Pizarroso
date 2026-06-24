@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reservas — Finca La Oliva del Pizarroso</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh}
+.topbar{background:#2c4a2e;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar h1{font-size:16px;font-weight:600;letter-spacing:.01em;flex:1}
+.sub{font-size:12px;opacity:.7}
+.user-pill{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:12px;display:flex;align-items:center;gap:6px}
+.logout-btn{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
+.logout-btn:hover{background:rgba(255,255,255,.1)}
+.container{max-width:780px;margin:0 auto;padding:20px 16px}
+.screen{display:none}
+.screen.active{display:block}
+.card{background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+h2{font-size:20px;font-weight:600;margin-bottom:4px;color:#1a1a1a}
+h3{font-size:15px;font-weight:600;margin-bottom:12px;color:#1a1a1a}
+.subtitle{font-size:13px;color:#666;margin-bottom:20px}
+label{font-size:13px;color:#555;display:block;margin-bottom:4px;margin-top:10px}
+input,select{font-size:14px;color:#1a1a1a;background:#fff;border:1px solid #d0cec8;border-radius:8px;padding:9px 12px;width:100%;outline:none;transition:border-color .15s}
+input:focus,select:focus{border-color:#2c4a2e}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:8px;border:1px solid #d0cec8;background:#fff;color:#1a1a1a;cursor:pointer;font-size:14px;font-family:inherit;transition:all .15s}
+.btn:hover{background:#f0efeb}
+.btn-primary{background:#2c4a2e;color:#fff;border-color:#2c4a2e}
+.btn-primary:hover{background:#1e3420}
+.btn-danger{background:#8b1f1f;color:#fff;border-color:#8b1f1f;font-size:12px;padding:5px 10px}
+.btn-danger:hover{background:#6e1818}
+.btn-sm{font-size:12px;padding:5px 12px}
+.error-box{font-size:13px;color:#8b1f1f;padding:8px 12px;background:#fdf0f0;border-radius:8px;margin-top:8px;border-left:3px solid #c9322f}
+.success-box{font-size:13px;color:#1e4d1e;padding:8px 12px;background:#edf7ed;border-radius:8px;margin-top:8px;border-left:3px solid #2c4a2e}
+.info-box{font-size:13px;padding:10px 12px;border-radius:8px;margin-bottom:14px}
+.info-tio{background:#e8f0fb;color:#1a3a6e;border-left:3px solid #3a6bbf}
+.info-sob{background:#edf7ed;color:#1e4d1e;border-left:3px solid #2c4a2e}
+.nav{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.nav-tab{padding:8px 16px;border-radius:8px;border:1px solid #d0cec8;background:#fff;cursor:pointer;font-size:13px;color:#555;font-family:inherit;transition:all .15s}
+.nav-tab:hover{background:#f0efeb}
+.nav-tab.active{background:#2c4a2e;color:#fff;border-color:#2c4a2e}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+.badge-tio{background:#dce8fb;color:#1a3a6e}
+.badge-sob{background:#ddf0dd;color:#1e4d1e}
+.badge-admin{background:#fde8d8;color:#7a2e00}
+.room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-bottom:14px}
+.room-item{border:2px solid #d0cec8;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s;font-size:13px;background:#fff}
+.room-item:hover{border-color:#2c4a2e}
+.room-item.selected{border-color:#2c4a2e;background:#edf7ed}
+.room-item.busy{opacity:.4;cursor:not-allowed}
+.room-name{font-weight:600;color:#1a1a1a;margin-bottom:2px}
+.room-sub{color:#777;font-size:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #eee;font-size:13px}
+.res-item:last-child{border-bottom:none}
+.res-info{flex:1}
+.res-meta{color:#666;font-size:12px;margin-top:2px}
+.chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:4px;margin-right:4px;font-weight:500}
+.chip-hab{background:#ddf0dd;color:#1e4d1e}
+.chip-total{background:#fde8d8;color:#7a2e00}
+.section-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px}
+.month-nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.month-nav span{font-size:14px;font-weight:600;flex:1;text-align:center}
+.month-nav button{background:#fff;border:1px solid #d0cec8;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.month-nav button:hover{background:#f0efeb}
+.mini-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
+.mc-day{text-align:center;font-size:11px;padding:3px 1px;border-radius:4px;cursor:default;color:#666}
+.mc-day.header{font-weight:700;color:#888;font-size:10px}
+.mc-day.taken{background:#f5c4b3;color:#7a2000}
+.mc-day.mine{background:#b5d4f4;color:#0c447c}
+.mc-day.today{font-weight:700;outline:2px solid #2c4a2e}
+.occ-row{display:flex;gap:8px;align-items:center;font-size:13px;margin-bottom:6px}
+.occ-label{flex:0 0 150px;color:#555;font-size:12px;line-height:1.3}
+.occ-bar{flex:1;height:18px;background:#eee;border-radius:4px;overflow:hidden;cursor:pointer}
+.occ-fill{height:100%;background:#2c4a2e;border-radius:4px;display:flex;align-items:center;padding-left:5px;color:#fff;font-size:10px;transition:width .3s}
+.admin-table{width:100%;font-size:13px;border-collapse:collapse}
+.admin-table td{padding:8px 6px;border-bottom:1px solid #eee}
+.admin-table tr:last-child td{border-bottom:none}
+.divider{border:none;border-top:1px solid #eee;margin:16px 0}
+.pin-hint{font-size:12px;color:#888;margin-top:4px}
+.loading{text-align:center;padding:30px;color:#888;font-size:14px}
+.occ-filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.occ-filters select{width:auto;flex:1;min-width:160px;margin-bottom:0}
+</style>
+</head>
+<body>
+
+<div id="topbar-login" class="topbar">
+  <div style="font-size:24px">🫒</div>
+  <div>
+    <div style="font-size:15px;font-weight:700">Finca La Oliva del Pizarroso</div>
+    <div class="sub">Sistema familiar de reservas</div>
+  </div>
+</div>
+
+<div id="topbar-main" class="topbar" style="display:none">
+  <div style="font-size:24px">🫒</div>
+  <div style="flex:1">
+    <div style="font-size:15px;font-weight:700">Finca La Oliva del Pizarroso</div>
+    <div class="sub">Sistema familiar de reservas</div>
+  </div>
+  <div class="user-pill">
+    <span id="ub-nombre-top" style="font-weight:600"></span>
+    <span id="ub-badge-top"></span>
+  </div>
+  <button class="logout-btn" onclick="doLogout()">Salir</button>
+</div>
+
+<div class="container">
+
+<div id="screen-login" class="screen active">
+  <div class="card" style="margin-top:20px;max-width:460px;margin-left:auto;margin-right:auto">
+    <h2>Acceso familiar</h2>
+    <p class="subtitle">Identifícate para reservar o consultar disponibilidad</p>
+    <hr class="divider">
+    <label>Nombre</label>
+    <input id="login-nombre" placeholder="Ej: María"/>
+    <label>Primer apellido</label>
+    <input id="login-ap1" placeholder="Ej: González"/>
+    <label>Segundo apellido (opcional)</label>
+    <input id="login-ap2" placeholder="Ej: López"/>
+    <label>Tipo de familiar</label>
+    <select id="login-tipo" onchange="onTipoChange()">
+      <option value="">— Selecciona —</option>
+      <option value="sobrino">Sobrino/a</option>
+      <option value="tio">Tío/a</option>
+      <option value="admin">Administrador/a de la finca</option>
+    </select>
+    <div id="admin-pin-section" style="display:none;margin-top:10px;padding:12px;background:#fdf8f0;border-radius:8px;border:1px solid #e8d8b8">
+      <label style="margin-top:0">🔒 PIN de administrador</label>
+      <input type="password" id="login-pin" placeholder="Introduce tu PIN" maxlength="12"/>
+      <p class="pin-hint">Contacta con otro administrador si no recuerdas tu PIN</p>
+    </div>
+    <div id="login-error" class="error-box" style="display:none"></div>
+    <button class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center" onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<div id="screen-main" class="screen">
+  <div style="margin-top:16px"></div>
+  <div class="nav">
+    <button class="nav-tab active" onclick="showTab('ocupacion',this)">📅 Ver ocupación</button>
+    <button class="nav-tab" onclick="showTab('reservar',this)">➕ Nueva reserva</button>
+    <button class="nav-tab" onclick="showTab('mis-reservas',this)">📋 Mis reservas</button>
+    <button class="nav-tab" id="tab-admin-btn" onclick="showTab('admin',this)" style="display:none">⚙️ Administrar</button>
+  </div>
+
+  <div id="tab-ocupacion" class="tab-content">
+    <div class="card">
+      <h3>Ocupación de la finca</h3>
+      <div class="occ-filters">
+        <div class="month-nav" style="flex:0 0 auto">
+          <button onclick="changeOccMonth(-1)">‹</button>
+          <span id="occ-month-label" style="min-width:160px"></span>
+          <button onclick="changeOccMonth(1)">›</button>
+        </div>
+        <select id="occ-room-filter" onchange="renderOcupacion()">
+          <option value="">Todos los espacios</option>
+        </select>
+      </div>
+      <div id="occ-content"><div class="loading">Cargando...</div></div>
+      <div style="margin-top:10px;font-size:11px;color:#888;display:flex;gap:12px">
+        <span><span style="display:inline-block;width:12px;height:12px;background:#f5c4b3;border-radius:2px;vertical-align:-1px;margin-right:3px"></span>Ocupado por otro</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:#b5d4f4;border-radius:2px;vertical-align:-1px;margin-right:3px"></span>Reservado por ti</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-reservar" class="tab-content" style="display:none">
+    <div class="card">
+      <h3>Nueva reserva</h3>
+      <div id="res-tio-info" class="info-box info-tio" style="display:none">
+        🫒 Como tío/a puedes reservar habitaciones sueltas o <strong>la finca entera</strong> (máx. 2 veces/año, no disponible en octubre ni Semana Santa).
+      </div>
+      <div id="res-sob-info" class="info-box info-sob" style="display:none">
+        🌿 Puedes reservar habitaciones con un máximo de 3 semanas de antelación. No puedes reservar la finca completa.
+      </div>
+      <label>Tipo de reserva</label>
+      <select id="res-tipo" onchange="onTipoReservaChange()">
+        <option value="hab">Habitaciones individuales</option>
+        <option value="total" id="opt-total" style="display:none">Finca completa (solo tíos)</option>
+      </select>
+      <div id="res-rooms-section">
+        <label>Selecciona habitaciones</label>
+        <div class="room-grid" id="room-grid"></div>
+      </div>
+      <div class="row2">
+        <div><label>Fecha de entrada</label><input type="date" id="res-from" onchange="onDateChange()"/></div>
+        <div><label>Fecha de salida</label><input type="date" id="res-to" onchange="onDateChange()"/></div>
+      </div>
+      <div id="date-info" style="font-size:12px;color:#666;margin-top:4px;margin-bottom:4px"></div>
+      <label>Notas (opcional)</label>
+      <input id="res-notas" placeholder="Ej: llegaremos por la tarde"/>
+      <div id="res-error" class="error-box" style="display:none"></div>
+      <div id="res-ok" class="success-box" style="display:none"></div>
+      <button class="btn btn-primary" style="margin-top:14px;width:100%;justify-content:center" onclick="doReservar()">Confirmar reserva</button>
+    </div>
+  </div>
+
+  <div id="tab-mis-reservas" class="tab-content" style="display:none">
+    <div class="card">
+      <h3>Mis reservas</h3>
+      <div id="mis-res-list"><div class="loading">Cargando...</div></div>
+    </div>
+  </div>
+
+  <div id="tab-admin" class="tab-content" style="display:none">
+    <div class="card">
+      <h3>⚙️ Todas las reservas</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:12px">Como administrador puedes cancelar cualquier reserva</p>
+      <div id="admin-res-list"><div class="loading">Cargando...</div></div>
+    </div>
+    <div class="card">
+      <h3>🔒 Administradores y PINs</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:12px">Gestiona quién tiene acceso de administrador</p>
+      <div id="admin-creds-list"></div>
+      <hr class="divider">
+      <h3 style="margin-bottom:10px">Añadir o actualizar administrador</h3>
+      <label>Nombre completo (exacto)</label>
+      <input id="new-admin-nombre" placeholder="Nombre y apellidos"/>
+      <label>PIN (mínimo 4 caracteres)</label>
+      <input type="password" id="new-admin-pin" placeholder="Nuevo PIN" maxlength="12"/>
+      <div id="admin-cred-error" class="error-box" style="display:none"></div>
+      <div id="admin-cred-ok" class="success-box" style="display:none"></div>
+      <button class="btn btn-primary" style="margin-top:10px" onclick="saveAdminCred()">Guardar administrador</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SUPABASE_URL='https://tonjfuypyiuaurzqusfo.supabase.co';
+const SUPABASE_KEY='sb_publishable_hSXDoZj3dpVazPzY4xQUXA_a052v0Yv';
+
+const SPACES=[
+  {id:'b1h1',label:'Hab. 1',grupo:'Bungalow 1'},
+  {id:'b1h2',label:'Hab. 2',grupo:'Bungalow 1'},
+  {id:'b1h3',label:'Hab. 3',grupo:'Bungalow 1'},
+  {id:'b2h1',label:'Hab. 1',grupo:'Bungalow 2'},
+  {id:'b2h2',label:'Hab. 2',grupo:'Bungalow 2'},
+  {id:'b2h3',label:'Hab. 3',grupo:'Bungalow 2'},
+  {id:'b3h1',label:'Hab. 1',grupo:'Bungalow 3'},
+  {id:'b3h2',label:'Hab. 2',grupo:'Bungalow 3'},
+  {id:'b3h3',label:'Hab. 3',grupo:'Bungalow 3'},
+  {id:'of1',label:'Oficina completa',grupo:'Oficina'},
+  {id:'cph1',label:'Hab. 1',grupo:'Casa Principal'},
+  {id:'cph2',label:'Hab. 2',grupo:'Casa Principal'},
+  {id:'cph3',label:'Hab. 3',grupo:'Casa Principal'},
+  {id:'cph4',label:'Hab. 4',grupo:'Casa Principal'},
+  {id:'cph5',label:'Hab. 5',grupo:'Casa Principal'},
+];
+
+let reservas=[],adminCreds=[],currentUser=null,selectedRooms=[],occViewDate=new Date();
+
+async function sbFetch(path,opts={}){
+  const res=await fetch(SUPABASE_URL+path,{...opts,headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'',...(opts.headers||{})}});
+  if(!res.ok&&res.status!==204){const t=await res.text();throw new Error(t);}
+  if(res.status===204)return null;
+  return res.json();
+}
+async function loadReservas(){reservas=await sbFetch('/rest/v1/reservas?select=*&order=fecha_desde.asc')||[];}
+async function loadAdmins(){adminCreds=await sbFetch('/rest/v1/administradores?select=*')||[];}
+async function addReserva(r){await sbFetch('/rest/v1/reservas',{method:'POST',prefer:'return=minimal',body:JSON.stringify({id:r.id,user_id:r.userId,nombre:r.nombre,tipo:r.tipo,rooms:r.rooms,fecha_desde:r.from,fecha_hasta:r.to,notas:r.notas})});}
+async function deleteReserva(id){await sbFetch('/rest/v1/reservas?id=eq.'+id,{method:'DELETE'});}
+async function upsertAdmin(nombre,pin){await sbFetch('/rest/v1/administradores',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify({nombre,pin})});}
+async function deleteAdmin(id){await sbFetch('/rest/v1/administradores?id=eq.'+id,{method:'DELETE'});}
+
+function parseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function fmtDate(s){if(!s)return'';return parseDate(s).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});}
+function dateStr(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+dd;}
+function today(){return dateStr(new Date());}
+
+function isOctober(from,to){const d=parseDate(from),t=parseDate(to);for(let dd=new Date(d);dd<=t;dd.setDate(dd.getDate()+1))if(dd.getMonth()===9)return true;return false;}
+function getSemanaSanta(year){const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m2=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m2+114)/31),dy=((h+l-7*m2+114)%31)+1;const easter=new Date(year,mo-1,dy);const ps=new Date(easter);ps.setDate(easter.getDate()-7);const em=new Date(easter);em.setDate(easter.getDate()+1);return{start:dateStr(ps),end:dateStr(em)};}
+function isSemanaSanta(from,to){const years=new Set();const d=parseDate(from),t=parseDate(to);for(let dd=new Date(d);dd<=t;dd.setDate(dd.getDate()+1))years.add(dd.getFullYear());for(const y of years){const ss=getSemanaSanta(y);if(from<=ss.end&&to>=ss.start)return true;}return false;}
+function roomBusy(roomId,from,to,excludeId){return reservas.some(r=>{if(r.id===excludeId)return false;const rr=r.tipo==='total'?SPACES.map(s=>s.id):r.rooms;return rr.includes(roomId)&&r.fecha_desde<to&&r.fecha_hasta>from;});}
+function getTioTotalYear(userId,year){return reservas.filter(r=>r.user_id===userId&&r.tipo==='total'&&r.fecha_desde.startsWith(year+''));}
+
+function onTipoChange(){document.getElementById('admin-pin-section').style.display=document.getElementById('login-tipo').value==='admin'?'block':'none';}
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');document.getElementById('topbar-login').style.display=id==='login'?'flex':'none';document.getElementById('topbar-main').style.display=id==='main'?'flex':'none';}
+function showTab(id,btn){document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).style.display='block';if(btn)btn.classList.add('active');if(id==='ocupacion')renderOcupacion();if(id==='mis-reservas')renderMisReservas();if(id==='admin'){renderAdmin();renderAdminCreds();}if(id==='reservar')renderReservar();}
+
+async function doLogin(){
+  const nombre=document.getElementById('login-nombre').value.trim();
+  const ap1=document.getElementById('login-ap1').value.trim();
+  const ap2=document.getElementById('login-ap2').value.trim();
+  const tipo=document.getElementById('login-tipo').value;
+  const pin=document.getElementById('login-pin').value;
+  const errEl=document.getElementById('login-error');
+  errEl.style.display='none';
+  if(!nombre||!ap1){errEl.textContent='Introduce nombre y al menos un apellido';errEl.style.display='block';return;}
+  if(!tipo){errEl.textContent='Selecciona tu tipo de familiar';errEl.style.display='block';return;}
+  const fullName=[nombre,ap1,ap2].filter(Boolean).join(' ');
+  if(tipo==='admin'){
+    if(!pin){errEl.textContent='Introduce tu PIN de administrador';errEl.style.display='block';return;}
+    await loadAdmins();
+    const match=adminCreds.find(a=>a.nombre.toLowerCase().trim()===fullName.toLowerCase().trim()&&a.pin===pin);
+    if(!match){errEl.textContent='Nombre o PIN incorrecto. Contacta con otro administrador.';errEl.style.display='block';return;}
+  }
+  currentUser={nombre:fullName,tipo,userId:fullName.toLowerCase().replace(/\s+/g,'-')};
+  document.getElementById('ub-nombre-top').textContent=fullName;
+  const badges={tio:'<span class="badge badge-tio">Tío/a</span>',sobrino:'<span class="badge badge-sob">Sobrino/a</span>',admin:'<span class="badge badge-admin">Admin</span>'};
+  document.getElementById('ub-badge-top').innerHTML=badges[tipo];
+  document.getElementById('tab-admin-btn').style.display=tipo==='admin'?'':'none';
+  await loadReservas();
+  showScreen('main');
+  showTab('ocupacion',document.querySelector('.nav-tab'));
+  populateRoomFilter();
+}
+function doLogout(){currentUser=null;document.getElementById('login-pin').value='';showScreen('login');}
+
+function populateRoomFilter(){const sel=document.getElementById('occ-room-filter');sel.innerHTML='<option value="">Todos los espacios</option>';[...new Set(SPACES.map(s=>s.grupo))].forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o);});}
+
+function changeOccMonth(delta){occViewDate=new Date(occViewDate.getFullYear(),occViewDate.getMonth()+delta,1);renderOcupacion();}
+function renderOcupacion(){
+  const filter=document.getElementById('occ-room-filter').value;
+  const year=occViewDate.getFullYear(),month=occViewDate.getMonth();
+  const label=new Date(year,month,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});
+  document.getElementById('occ-month-label').textContent=label.charAt(0).toUpperCase()+label.slice(1);
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const firstDay=(new Date(year,month,1).getDay()+6)%7;
+  let spaces=SPACES;
+  if(filter)spaces=SPACES.filter(s=>s.grupo===filter);
+  let html='';
+  const grupos=[...new Set(spaces.map(s=>s.grupo))];
+  grupos.forEach(grupo=>{
+    const rooms=spaces.filter(s=>s.grupo===grupo);
+    html+='<div class="section-label">'+grupo+'</div>';
+    rooms.forEach(room=>{
+      const days=[];
+      for(let d=1;d<=daysInMonth;d++){
+        const ds=dateStr(new Date(year,month,d));
+        const busy=reservas.filter(r=>{const rr=r.tipo==='total'?SPACES.map(s=>s.id):r.rooms;return rr.includes(room.id)&&r.fecha_desde<=ds&&r.fecha_hasta>ds;});
+        days.push({d,busy});
+      }
+      const pct=Math.round(days.filter(d=>d.busy.length>0).length/daysInMonth*100);
+      html+='<div class="occ-row"><span class="occ-label">'+room.grupo+'<br><strong>'+room.label+'</strong></span><div class="occ-bar" onclick="toggleCalRoom(\'cal-'+room.id+'\')" title="Clic para ver detalle"><div class="occ-fill" style="width:'+pct+'%">'+(pct>15?pct+'%':'')+'</div></div></div>';
+      html+='<div id="cal-'+room.id+'" style="display:none;padding:8px;background:#f9f9f7;border-radius:8px;margin-bottom:8px"><div class="mini-cal">';
+      ['L','M','X','J','V','S','D'].forEach(d=>html+='<div class="mc-day header">'+d+'</div>');
+      for(let i=0;i<firstDay;i++)html+='<div></div>';
+      days.forEach(function(item){
+        const ds=dateStr(new Date(year,month,item.d));
+        const isToday=ds===today();
+        const isMine=item.busy.some(r=>r.user_id===currentUser.userId);
+        const cls=item.busy.length>0?(isMine?'mine':'taken'):'';
+        const who=item.busy.map(r=>r.nombre).join(', ');
+        html+='<div class="mc-day '+cls+(isToday?' today':'')+'" title="'+(who||'Libre')+'">'+item.d+'</div>';
+      });
+      html+='</div></div>';
+    });
+  });
+  document.getElementById('occ-content').innerHTML=html;
+}
+function toggleCalRoom(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
+
+function renderReservar(){
+  const tipo=currentUser.tipo;
+  document.getElementById('res-tio-info').style.display=tipo==='tio'||tipo==='admin'?'block':'none';
+  document.getElementById('res-sob-info').style.display=tipo==='sobrino'?'block':'none';
+  document.getElementById('opt-total').style.display=tipo==='tio'||tipo==='admin'?'':'none';
+  selectedRooms=[];buildRoomGrid();
+  const f=document.getElementById('res-from');if(!f.value)f.value=today();
+  onTipoReservaChange();
+}
+function buildRoomGrid(){
+  const from=document.getElementById('res-from').value,to=document.getElementById('res-to').value;
+  document.getElementById('room-grid').innerHTML=SPACES.map(function(s){
+    const busy=from&&to?roomBusy(s.id,from,to):false;
+    const sel=selectedRooms.includes(s.id);
+    return '<div class="room-item'+(sel?' selected':'')+(busy?' busy':'')+'" onclick="'+(busy?'':'toggleRoom(\''+s.id+'\')')+'"><div class="room-name">'+s.label+'</div><div class="room-sub">'+s.grupo+(busy?' · Ocupada':'')+'</div></div>';
+  }).join('');
+}
+function toggleRoom(id){selectedRooms=selectedRooms.includes(id)?selectedRooms.filter(r=>r!==id):[...selectedRooms,id];buildRoomGrid();}
+function onTipoReservaChange(){const tipo=document.getElementById('res-tipo').value;document.getElementById('res-rooms-section').style.display=tipo==='total'?'none':'block';if(tipo==='total')selectedRooms=[];}
+function onDateChange(){const from=document.getElementById('res-from').value,to=document.getElementById('res-to').value;if(from&&to){const nights=Math.round((parseDate(to)-parseDate(from))/86400000);document.getElementById('date-info').textContent=nights>0?nights+' noche'+(nights!==1?'s':''):'';}buildRoomGrid();}
+
+async function doReservar(){
+  const from=document.getElementById('res-from').value,to=document.getElementById('res-to').value,notas=document.getElementById('res-notas').value.trim(),tipoRes=document.getElementById('res-tipo').value;
+  const errEl=document.getElementById('res-error'),okEl=document.getElementById('res-ok');
+  errEl.style.display='none';okEl.style.display='none';
+  const err=function(msg){errEl.textContent=msg;errEl.style.display='block';};
+  if(!from||!to)return err('Selecciona fechas de entrada y salida');
+  if(from>=to)return err('La salida debe ser posterior a la entrada');
+  const nights=Math.round((parseDate(to)-parseDate(from))/86400000);
+  if(nights<1)return err('La reserva debe ser de al menos 1 noche');
+  const tipo=currentUser.tipo;
+  if(tipoRes==='total'){
+    if(tipo==='sobrino')return err('Solo los tíos pueden reservar la finca completa');
+    if(isOctober(from,to))return err('No se puede reservar la finca completa en octubre');
+    if(isSemanaSanta(from,to))return err('No se puede reservar la finca completa en Semana Santa');
+    const year=parseDate(from).getFullYear();
+    if(getTioTotalYear(currentUser.userId,year).length>=2)return err('Ya tienes 2 reservas completas en '+year+'. Límite alcanzado.');
+    const allBusy=SPACES.find(s=>roomBusy(s.id,from,to));
+    if(allBusy)return err('Hay habitaciones ocupadas en esas fechas: '+allBusy.grupo+' '+allBusy.label);
+  }else{
+    if(tipo==='sobrino'){const maxDate=new Date();maxDate.setDate(maxDate.getDate()+21);if(parseDate(from)>maxDate)return err('Los sobrinos no pueden reservar con más de 3 semanas de antelación');}
+    if(selectedRooms.length===0)return err('Selecciona al menos una habitación');
+    const busyRoom=selectedRooms.find(id=>roomBusy(id,from,to));
+    if(busyRoom){const sp=SPACES.find(s=>s.id===busyRoom);return err(sp.grupo+' '+sp.label+' ya está ocupada en esas fechas');}
+  }
+  const nueva={id:'r'+Date.now(),userId:currentUser.userId,nombre:currentUser.nombre,tipo:tipoRes,rooms:tipoRes==='total'?[]:selectedRooms,from,to,notas};
+  try{await addReserva(nueva);await loadReservas();okEl.textContent='✓ Reserva confirmada correctamente';okEl.style.display='block';selectedRooms=[];buildRoomGrid();document.getElementById('res-notas').value='';setTimeout(function(){okEl.style.display='none';},3000);}
+  catch(e){err('Error al guardar la reserva. Inténtalo de nuevo.');}
+}
+
+function resItemHTML(r,canCancel){
+  const rooms=r.tipo==='total'?'Finca completa':SPACES.filter(s=>r.rooms.includes(s.id)).map(s=>s.grupo+' '+s.label).join(', ');
+  const chip=r.tipo==='total'?'<span class="chip chip-total">Finca completa</span>':'<span class="chip chip-hab">Habitaciones</span>';
+  const cancelBtn=canCancel?'<button class="btn btn-danger" onclick="cancelarReserva(\''+r.id+'\')">✕ Cancelar</button>':'';
+  return '<div class="res-item"><div class="res-info">'+chip+' <strong>'+r.nombre+'</strong><div class="res-meta">📅 '+fmtDate(r.fecha_desde)+' → '+fmtDate(r.fecha_hasta)+'</div><div class="res-meta">🛏 '+rooms+'</div>'+(r.notas?'<div class="res-meta" style="font-style:italic">📝 '+r.notas+'</div>':'')+'</div>'+cancelBtn+'</div>';
+}
+async function renderMisReservas(){await loadReservas();const mis=reservas.filter(r=>r.user_id===currentUser.userId);document.getElementById('mis-res-list').innerHTML=mis.length?mis.map(r=>resItemHTML(r,true)).join(''):'<p style="color:#888;font-size:14px">No tienes reservas activas</p>';}
+async function renderAdmin(){await loadReservas();document.getElementById('admin-res-list').innerHTML=reservas.length?reservas.map(r=>resItemHTML(r,true)).join(''):'<p style="color:#888;font-size:14px">No hay reservas</p>';}
+async function cancelarReserva(id){
+  const r=reservas.find(x=>x.id===id);if(!r)return;
+  if(currentUser.tipo!=='admin'&&r.user_id!==currentUser.userId){alert('Solo puedes cancelar tus propias reservas');return;}
+  if(!confirm('¿Cancelar reserva de '+r.nombre+' del '+fmtDate(r.fecha_desde)+' al '+fmtDate(r.fecha_hasta)+'?'))return;
+  try{await deleteReserva(id);await loadReservas();renderMisReservas();renderAdmin();}
+  catch(e){alert('Error al cancelar. Inténtalo de nuevo.');}
+}
+async function renderAdminCreds(){
+  await loadAdmins();
+  document.getElementById('admin-creds-list').innerHTML='<table class="admin-table"><tr><td style="font-weight:600;color:#666">Nombre</td><td style="font-weight:600;color:#666">PIN</td><td></td></tr>'+adminCreds.map(function(a){return '<tr><td>'+a.nombre+'</td><td style="letter-spacing:2px">••••</td><td style="text-align:right"><button class="btn btn-danger" onclick="removeAdmin('+a.id+',\''+a.nombre.replace(/'/g,"\\'")+'\')" title="Eliminar">🗑</button></td></tr>';}).join('')+'</table>';
+}
+async function removeAdmin(id,nombre){
+  if(adminCreds.length<=1){alert('Debe haber al menos un administrador');return;}
+  if(nombre===currentUser.nombre){alert('No puedes eliminarte a ti mismo');return;}
+  if(!confirm('¿Eliminar a '+nombre+' como administrador?'))return;
+  try{await deleteAdmin(id);await renderAdminCreds();}catch(e){alert('Error al eliminar');}
+}
+async function saveAdminCred(){
+  const nombre=document.getElementById('new-admin-nombre').value.trim(),pin=document.getElementById('new-admin-pin').value;
+  const errEl=document.getElementById('admin-cred-error'),okEl=document.getElementById('admin-cred-ok');
+  errEl.style.display='none';okEl.style.display='none';
+  if(!nombre){errEl.textContent='Introduce el nombre completo';errEl.style.display='block';return;}
+  if(pin.length<4){errEl.textContent='El PIN debe tener al menos 4 caracteres';errEl.style.display='block';return;}
+  try{await upsertAdmin(nombre,pin);document.getElementById('new-admin-nombre').value='';document.getElementById('new-admin-pin').value='';okEl.textContent='✓ Administrador guardado';okEl.style.display='block';await renderAdminCreds();setTimeout(function(){okEl.style.display='none';},3000);}
+  catch(e){errEl.textContent='Error al guardar';errEl.style.display='block';}
+}
+
+showScreen('login');
+</script>
+</body>
+</html>
