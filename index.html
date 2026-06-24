@@ -287,12 +287,36 @@ function hoy() {
 }
 
 function diaOcupado(espacioId, dia) {
+  var esp = null;
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    if (ESPACIOS[i].id === espacioId) { esp = ESPACIOS[i]; break; }
+  }
+  if (!esp) return false;
+  // Oficina: bloquear si hay cualquier reserva
+  if (esp.habs.length === 1) {
+    for (var i = 0; i < reservas.length; i++) {
+      var r = reservas[i];
+      if (r.tipo !== espacioId) continue;
+      if (r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
+    }
+    return false;
+  }
+  // Para espacios con varias habitaciones: bloquear solo si TODAS están ocupadas
+  var habsOcupadas = [];
   for (var i = 0; i < reservas.length; i++) {
     var r = reservas[i];
     if (r.tipo !== espacioId) continue;
-    if (r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
+    if (r.fecha_desde <= dia && r.fecha_hasta > dia) {
+      if (r.rooms) {
+        for (var j = 0; j < r.rooms.length; j++) {
+          if (habsOcupadas.indexOf(r.rooms[j]) === -1) {
+            habsOcupadas.push(r.rooms[j]);
+          }
+        }
+      }
+    }
   }
-  return false;
+  return habsOcupadas.length >= esp.habs.length;
 }
 
 function habOcupada(espacioId, hab, desde, hasta) {
