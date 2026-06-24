@@ -210,7 +210,7 @@ input:focus,select:focus{border-color:#8b6f47}
 
 <script>
 var SB_URL = 'https://tonjfuypyiuaurzqusfo.supabase.co';
-var SB_KEY = 'sb_publishable_hSXDoZj3dpVazPzY4xQUXA_a052v0Yv';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvbmpmdXlweWl1YXVyenF1c2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjc1NDgsImV4cCI6MjA5NzkwMzU0OH0.cUyEGnpKX2yfEuoYCaPpKru8fwQKIuh4Zv8dS0eEtl4';
 
 var ESPACIOS = [
   { id:'cp', nombre:'Casa Principal', icon:'🏠', habs:['Hab. 1','Hab. 2','Hab. 3','Hab. 4','Hab. 5'] },
@@ -242,10 +242,13 @@ function sbFetch(path, opts) {
     headers: headers,
     body: opts.body || undefined
   }).then(function(res) {
-    if (res.status === 204) return null;
-    return res.json().then(function(data) {
-      if (!res.ok) throw new Error(JSON.stringify(data));
-      return data;
+    if (res.status === 204 || res.status === 201) return null;
+    if (!res.ok) {
+      return res.text().then(function(t) { throw new Error(t); });
+    }
+    return res.text().then(function(t) {
+      if (!t || t.trim() === '') return null;
+      return JSON.parse(t);
     });
   });
 }
