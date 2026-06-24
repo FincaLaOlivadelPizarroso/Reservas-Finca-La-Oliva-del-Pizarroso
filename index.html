@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Reservas — Finca La Oliva del Pizarroso</title>
+<title>Reservas - Finca La Oliva del Pizarroso</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f0e8;color:#1a1a1a;min-height:100vh}
@@ -43,52 +43,41 @@ input:focus,select:focus{border-color:#8b6f47}
 .res-item:last-child{border-bottom:none}
 .res-info{flex:1}
 .res-meta{color:#666;font-size:12px;margin-top:2px}
-.chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:4px;margin-right:4px;font-weight:500}
-.chip-hab{background:#ddf0dd;color:#1e4d1e}
+.chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:4px;margin-right:4px;font-weight:500;background:#ddf0dd;color:#1e4d1e}
 .admin-table{width:100%;font-size:13px;border-collapse:collapse}
 .admin-table td{padding:8px 6px;border-bottom:1px solid #eee}
 .admin-table tr:last-child td{border-bottom:none}
-
-/* ESPACIOS */
-.espacios-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
-.espacio-btn{border:2px solid #d0cec8;border-radius:10px;padding:14px 10px;cursor:pointer;text-align:center;background:#fff;transition:all .15s;font-family:inherit}
+.espacios-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.espacio-btn{border:2px solid #d0cec8;border-radius:10px;padding:14px 10px;cursor:pointer;text-align:center;background:#fff;transition:all .15s;font-family:inherit;width:100%}
 .espacio-btn:hover{border-color:#8b6f47;background:#faf6f0}
-.espacio-btn.active{border-color:#8b6f47;background:#f5f0e8}
-.espacio-btn .esp-icon{font-size:22px;margin-bottom:4px}
-.espacio-btn .esp-name{font-size:13px;font-weight:600;color:#1a1a1a}
-.espacio-btn .esp-sub{font-size:11px;color:#888;margin-top:2px}
-
-/* CALENDARIO */
-.cal-wrap{margin-bottom:16px}
+.espacio-btn.activo{border-color:#8b6f47;background:#f5f0e8}
+.esp-icon{font-size:22px;margin-bottom:4px}
+.esp-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.esp-sub{font-size:11px;color:#888;margin-top:2px}
 .month-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .month-nav span{font-size:14px;font-weight:600;flex:1;text-align:center}
-.month-nav button{background:#fff;border:1px solid #d0cec8;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.month-nav button{background:#fff;border:1px solid #d0cec8;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;font-family:inherit}
 .month-nav button:hover{background:#f0ebe0}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cal-header{text-align:center;font-size:11px;font-weight:700;color:#888;padding:4px 0}
-.cal-day{text-align:center;font-size:12px;padding:6px 2px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .15s;position:relative}
-.cal-day.empty{cursor:default}
-.cal-day.past{color:#ccc;cursor:default}
-.cal-day.free{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7}
-.cal-day.free:hover{background:#c8e6c9;border-color:#66bb6a}
-.cal-day.occupied{background:#ffebee;color:#b71c1c;border-color:#ef9a9a;cursor:default}
-.cal-day.selected{background:#8b6f47;color:#fff;border-color:#6e5535}
-.cal-day.today{font-weight:700;box-shadow:0 0 0 2px #8b6f47}
-.cal-legend{display:flex;gap:16px;font-size:11px;color:#666;margin-top:8px}
-.cal-legend span{display:flex;align-items:center;gap:4px}
-.cal-legend .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
-
-/* HABITACIONES */
-.hab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:16px}
+.cal-day{text-align:center;font-size:12px;padding:6px 2px;border-radius:6px;border:1px solid transparent}
+.cal-day.vacio{cursor:default}
+.cal-day.pasado{color:#ccc;cursor:default}
+.cal-day.libre{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7;cursor:pointer}
+.cal-day.libre:hover{background:#c8e6c9}
+.cal-day.ocupado{background:#ffebee;color:#b71c1c;border-color:#ef9a9a;cursor:default}
+.cal-day.seleccionado{background:#8b6f47;color:#fff;border-color:#6e5535;cursor:pointer}
+.cal-day.hoy{font-weight:700;box-shadow:0 0 0 2px #8b6f47}
+.cal-legend{display:flex;gap:16px;font-size:11px;color:#666;margin-top:8px;flex-wrap:wrap}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:3px}
+.hab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:16px}
 .hab-item{border:2px solid #d0cec8;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s;font-size:13px;background:#fff}
 .hab-item:hover{border-color:#8b6f47}
-.hab-item.selected{border-color:#8b6f47;background:#f5f0e8}
-.hab-item.occupied{opacity:.4;cursor:not-allowed;background:#fff0f0}
+.hab-item.selec{border-color:#8b6f47;background:#f5f0e8}
+.hab-item.ocup{opacity:.4;cursor:not-allowed;background:#fff0f0}
 .hab-name{font-weight:600;color:#1a1a1a;margin-bottom:2px}
 .hab-sub{color:#888;font-size:11px}
-
-.step-title{font-size:13px;font-weight:600;color:#8b6f47;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.step-title{font-size:12px;font-weight:700;color:#8b6f47;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -108,119 +97,111 @@ input:focus,select:focus{border-color:#8b6f47}
     <div class="sub">Sistema familiar de reservas</div>
   </div>
   <div class="user-pill">
-    <span id="ub-nombre-top" style="font-weight:600"></span>
-    <span id="ub-badge-top"></span>
+    <span id="ub-nombre" style="font-weight:600"></span>
+    <span id="ub-badge" style="margin-left:4px"></span>
   </div>
-  <button class="logout-btn" onclick="doLogout()">Salir</button>
+  <button class="logout-btn" id="btn-salir">Salir</button>
 </div>
 
 <div class="container">
 
-<!-- LOGIN -->
 <div id="screen-login" class="screen active">
   <div class="card" style="margin-top:20px;max-width:460px;margin-left:auto;margin-right:auto">
     <h2>Acceso familiar</h2>
     <p style="font-size:13px;color:#666;margin-bottom:16px">Identifícate para reservar o consultar disponibilidad</p>
     <hr class="divider">
     <label>Nombre</label>
-    <input id="login-nombre" placeholder="Ej: María"/>
+    <input id="inp-nombre" placeholder="Ej: Maria"/>
     <label>Primer apellido</label>
-    <input id="login-ap1" placeholder="Ej: Gonzalez"/>
+    <input id="inp-ap1" placeholder="Ej: Gonzalez"/>
     <label>Segundo apellido (opcional)</label>
-    <input id="login-ap2" placeholder="Ej: Lopez"/>
+    <input id="inp-ap2" placeholder="Ej: Lopez"/>
     <label>Tipo de familiar</label>
-    <select id="login-tipo" onchange="onTipoChange()">
-      <option value="">— Selecciona —</option>
+    <select id="inp-tipo">
+      <option value="">- Selecciona -</option>
       <option value="sobrino">Sobrino/a</option>
-      <option value="tio">Tío/a</option>
+      <option value="tio">Tio/a</option>
       <option value="admin">Administrador/a de la finca</option>
     </select>
-    <div id="admin-pin-section" style="display:none;margin-top:10px;padding:12px;background:#fdf8f0;border-radius:8px;border:1px solid #e8d8b8">
-      <label style="margin-top:0">🔒 PIN de administrador</label>
-      <input type="password" id="login-pin" placeholder="Introduce tu PIN" maxlength="12"/>
+    <div id="pin-section" style="display:none;margin-top:10px;padding:12px;background:#fdf8f0;border-radius:8px;border:1px solid #e8d8b8">
+      <label style="margin-top:0">PIN de administrador</label>
+      <input type="password" id="inp-pin" placeholder="Introduce tu PIN" maxlength="12"/>
       <p class="pin-hint">Contacta con otro administrador si no recuerdas tu PIN</p>
     </div>
     <div id="login-error" class="error-box" style="display:none"></div>
-    <button class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center" onclick="doLogin()">Entrar</button>
+    <button id="btn-entrar" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center">Entrar</button>
   </div>
 </div>
 
-<!-- MAIN -->
 <div id="screen-main" class="screen">
   <div style="margin-top:16px"></div>
   <div class="nav">
-    <button class="nav-tab active" onclick="showTab('reservar',this)">➕ Nueva reserva</button>
-    <button class="nav-tab" onclick="showTab('mis-reservas',this)">📋 Mis reservas</button>
-    <button class="nav-tab" id="tab-admin-btn" onclick="showTab('admin',this)" style="display:none">⚙️ Administrar</button>
+    <button class="nav-tab active" id="tab-btn-reservar">+ Nueva reserva</button>
+    <button class="nav-tab" id="tab-btn-mis">Mis reservas</button>
+    <button class="nav-tab" id="tab-btn-admin" style="display:none">Administrar</button>
   </div>
 
-  <!-- RESERVAR -->
   <div id="tab-reservar" class="tab-content">
     <div class="card">
-      <div class="step-title">Paso 1 — Elige un espacio</div>
+      <div class="step-title">Paso 1 - Elige un espacio</div>
       <div class="espacios-grid" id="espacios-grid"></div>
-
       <div id="paso2" style="display:none">
         <hr class="divider">
-        <div class="step-title">Paso 2 — Consulta disponibilidad</div>
-        <div class="cal-wrap">
-          <div class="month-nav">
-            <button onclick="changeMonth(-1)">&#8249;</button>
-            <span id="cal-month-label"></span>
-            <button onclick="changeMonth(1)">&#8250;</button>
-          </div>
-          <div class="cal-grid" id="cal-grid"></div>
-          <div class="cal-legend">
-            <span><span class="dot" style="background:#e8f5e9;border:1px solid #a5d6a7"></span>Disponible</span>
-            <span><span class="dot" style="background:#ffebee;border:1px solid #ef9a9a"></span>Ocupado</span>
-            <span><span class="dot" style="background:#8b6f47"></span>Seleccionado</span>
-          </div>
+        <div class="step-title">Paso 2 - Consulta disponibilidad y elige fechas</div>
+        <p style="font-size:12px;color:#666;margin-bottom:12px">Haz clic en el dia de entrada y luego en el dia de salida</p>
+        <div class="month-nav">
+          <button id="btn-mes-ant">&#8249;</button>
+          <span id="cal-mes"></span>
+          <button id="btn-mes-sig">&#8250;</button>
         </div>
-
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend" style="margin-top:8px">
+          <span><span class="dot" style="background:#e8f5e9;border:1px solid #a5d6a7"></span>Disponible</span>
+          <span><span class="dot" style="background:#ffebee;border:1px solid #ef9a9a"></span>Ocupado</span>
+          <span><span class="dot" style="background:#8b6f47"></span>Seleccionado</span>
+        </div>
         <div id="paso3" style="display:none">
           <hr class="divider">
-          <div class="step-title">Paso 3 — Confirma tu reserva</div>
-          <div id="resumen-fechas" style="font-size:13px;color:#555;margin-bottom:12px"></div>
+          <div class="step-title">Paso 3 - Confirma tu reserva</div>
+          <div id="resumen-fechas" style="font-size:13px;color:#555;margin-bottom:12px;padding:10px;background:#f5f0e8;border-radius:8px"></div>
           <div id="hab-section" style="display:none">
-            <label style="margin-top:0">Selecciona habitaciones para esas fechas</label>
+            <label style="margin-top:0;margin-bottom:8px">Selecciona habitaciones disponibles</label>
             <div class="hab-grid" id="hab-grid"></div>
           </div>
           <label>Notas (opcional)</label>
-          <input id="res-notas" placeholder="Ej: llegaremos por la tarde"/>
+          <input id="inp-notas" placeholder="Ej: llegaremos por la tarde"/>
           <div id="res-error" class="error-box" style="display:none"></div>
           <div id="res-ok" class="success-box" style="display:none"></div>
-          <button class="btn btn-primary" style="margin-top:14px;width:100%;justify-content:center" onclick="doReservar()">Confirmar reserva</button>
+          <button id="btn-confirmar" class="btn btn-primary" style="margin-top:14px;width:100%;justify-content:center">Confirmar reserva</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MIS RESERVAS -->
-  <div id="tab-mis-reservas" class="tab-content" style="display:none">
+  <div id="tab-mis" class="tab-content" style="display:none">
     <div class="card">
       <h3>Mis reservas</h3>
-      <div id="mis-res-list"><div class="loading">Cargando...</div></div>
+      <div id="mis-lista"><div class="loading">Cargando...</div></div>
     </div>
   </div>
 
-  <!-- ADMIN -->
   <div id="tab-admin" class="tab-content" style="display:none">
     <div class="card">
-      <h3>⚙️ Todas las reservas</h3>
-      <div id="admin-res-list"><div class="loading">Cargando...</div></div>
+      <h3>Todas las reservas</h3>
+      <div id="admin-lista"><div class="loading">Cargando...</div></div>
     </div>
     <div class="card">
-      <h3>🔒 Administradores y PINs</h3>
-      <div id="admin-creds-list"></div>
+      <h3>Administradores y PINs</h3>
+      <div id="admin-creds"></div>
       <hr class="divider">
-      <h3 style="margin-bottom:10px">Añadir o actualizar administrador</h3>
+      <h3 style="margin-bottom:10px">Anadir o actualizar administrador</h3>
       <label>Nombre completo (exacto)</label>
-      <input id="new-admin-nombre" placeholder="Nombre y apellidos"/>
-      <label>PIN (mínimo 4 caracteres)</label>
-      <input type="password" id="new-admin-pin" placeholder="Nuevo PIN" maxlength="12"/>
+      <input id="inp-admin-nombre" placeholder="Nombre y apellidos"/>
+      <label>PIN (minimo 4 caracteres)</label>
+      <input type="password" id="inp-admin-pin" placeholder="Nuevo PIN" maxlength="12"/>
       <div id="admin-cred-error" class="error-box" style="display:none"></div>
       <div id="admin-cred-ok" class="success-box" style="display:none"></div>
-      <button class="btn btn-primary" style="margin-top:10px" onclick="saveAdminCred()">Guardar administrador</button>
+      <button id="btn-guardar-admin" class="btn btn-primary" style="margin-top:10px">Guardar administrador</button>
     </div>
   </div>
 </div>
@@ -228,299 +209,492 @@ input:focus,select:focus{border-color:#8b6f47}
 </div>
 
 <script>
-const SUPABASE_URL='https://tonjfuypyiuaurzqusfo.supabase.co';
-const SUPABASE_KEY='sb_publishable_hSXDoZj3dpVazPzY4xQUXA_a052v0Yv';
+var SB_URL = 'https://tonjfuypyiuaurzqusfo.supabase.co';
+var SB_KEY = 'sb_publishable_hSXDoZj3dpVazPzY4xQUXA_a052v0Yv';
 
-const ESPACIOS = [
+var ESPACIOS = [
   { id:'cp', nombre:'Casa Principal', icon:'🏠', habs:['Hab. 1','Hab. 2','Hab. 3','Hab. 4','Hab. 5'] },
   { id:'b1', nombre:'Bungalow 1', icon:'🛖', habs:['Hab. 1','Hab. 2','Hab. 3'] },
   { id:'b2', nombre:'Bungalow 2', icon:'🛖', habs:['Hab. 1','Hab. 2','Hab. 3'] },
   { id:'b3', nombre:'Bungalow 3', icon:'🛖', habs:['Hab. 1','Hab. 2','Hab. 3'] },
-  { id:'of', nombre:'Oficina', icon:'🏢', habs:['Oficina completa'] },
+  { id:'of', nombre:'Oficina', icon:'🏢', habs:['Oficina completa'] }
 ];
 
-let reservas=[], adminCreds=[], currentUser=null;
-let selectedEspacio=null, calViewDate=new Date(), selectedFrom=null, selectedTo=null, selectedHabs=[];
+var reservas = [];
+var adminCreds = [];
+var currentUser = null;
+var espacioActual = null;
+var calFecha = new Date();
+var desdeFecha = null;
+var hastaFecha = null;
+var habsSelec = [];
 
-async function sbFetch(path,opts={}){
-  const res=await fetch(SUPABASE_URL+path,{...opts,headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'',...(opts.headers||{})}});
-  if(!res.ok&&res.status!==204){const t=await res.text();throw new Error(t);}
-  if(res.status===204)return null;
-  return res.json();
-}
-async function loadReservas(){reservas=await sbFetch('/rest/v1/reservas?select=*&order=fecha_desde.asc')||[];}
-async function loadAdmins(){adminCreds=await sbFetch('/rest/v1/administradores?select=*')||[];}
-async function addReserva(r){await sbFetch('/rest/v1/reservas',{method:'POST',prefer:'return=minimal',body:JSON.stringify({id:r.id,user_id:r.userId,nombre:r.nombre,tipo:r.espacio,rooms:r.habs,fecha_desde:r.from,fecha_hasta:r.to,notas:r.notas})});}
-async function deleteReserva(id){await sbFetch('/rest/v1/reservas?id=eq.'+id,{method:'DELETE'});}
-async function upsertAdmin(nombre,pin){await sbFetch('/rest/v1/administradores',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify({nombre,pin})});}
-async function deleteAdmin(id){await sbFetch('/rest/v1/administradores?id=eq.'+id,{method:'DELETE'});}
-
-function dateStr(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+dd;}
-function parseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
-function fmtDate(s){if(!s)return'';return parseDate(s).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});}
-function today(){return dateStr(new Date());}
-function addDays(s,n){const d=parseDate(s);d.setDate(d.getDate()+n);return dateStr(d);}
-
-function isDayOccupied(espacioId, dayStr){
-  const esp = ESPACIOS.find(e=>e.id===espacioId);
-  if(!esp) return false;
-  return reservas.some(r=>{
-    if(r.tipo !== espacioId) return false;
-    return r.fecha_desde <= dayStr && r.fecha_hasta > dayStr;
+function sbFetch(path, opts) {
+  if (!opts) opts = {};
+  var headers = {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json'
+  };
+  if (opts.prefer) headers['Prefer'] = opts.prefer;
+  return fetch(SB_URL + path, {
+    method: opts.method || 'GET',
+    headers: headers,
+    body: opts.body || undefined
+  }).then(function(res) {
+    if (res.status === 204) return null;
+    return res.json().then(function(data) {
+      if (!res.ok) throw new Error(JSON.stringify(data));
+      return data;
+    });
   });
 }
 
-function isRangeOccupied(espacioId, from, to){
-  return reservas.some(r=>{
-    if(r.tipo !== espacioId) return false;
-    return r.fecha_desde < to && r.fecha_hasta > from;
+function cargarReservas() {
+  return sbFetch('/rest/v1/reservas?select=*&order=fecha_desde.asc').then(function(data) {
+    reservas = data || [];
   });
 }
 
-function isHabOccupied(espacioId, habNombre, from, to){
-  return reservas.some(r=>{
-    if(r.tipo !== espacioId) return false;
-    if(!(r.fecha_desde < to && r.fecha_hasta > from)) return false;
-    return r.rooms && r.rooms.includes(habNombre);
+function cargarAdmins() {
+  return sbFetch('/rest/v1/administradores?select=*').then(function(data) {
+    adminCreds = data || [];
   });
 }
 
-function onTipoChange(){document.getElementById('admin-pin-section').style.display=document.getElementById('login-tipo').value==='admin'?'block':'none';}
-
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+id).classList.add('active');
-  document.getElementById('topbar-login').style.display=id==='login'?'flex':'none';
-  document.getElementById('topbar-main').style.display=id==='main'?'flex':'none';
-}
-function showTab(id,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).style.display='block';
-  if(btn)btn.classList.add('active');
-  if(id==='mis-reservas')renderMisReservas();
-  if(id==='admin'){renderAdmin();renderAdminCreds();}
-  if(id==='reservar')initReservar();
+function dateStr(d) {
+  var y = d.getFullYear();
+  var m = String(d.getMonth() + 1).padStart(2, '0');
+  var dd = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + dd;
 }
 
-async function doLogin(){
-  const nombre=document.getElementById('login-nombre').value.trim();
-  const ap1=document.getElementById('login-ap1').value.trim();
-  const ap2=document.getElementById('login-ap2').value.trim();
-  const tipo=document.getElementById('login-tipo').value;
-  const pin=document.getElementById('login-pin').value;
-  const errEl=document.getElementById('login-error');
-  errEl.style.display='none';
-  if(!nombre||!ap1){errEl.textContent='Introduce nombre y al menos un apellido';errEl.style.display='block';return;}
-  if(!tipo){errEl.textContent='Selecciona tu tipo de familiar';errEl.style.display='block';return;}
-  const fullName=[nombre,ap1,ap2].filter(Boolean).join(' ');
-  if(tipo==='admin'){
-    if(!pin){errEl.textContent='Introduce tu PIN de administrador';errEl.style.display='block';return;}
-    try{await loadAdmins();}catch(e){errEl.textContent='Error de conexión con la base de datos';errEl.style.display='block';return;}
-    const match=adminCreds.find(a=>a.nombre.toLowerCase().trim()===fullName.toLowerCase().trim()&&a.pin===pin);
-    if(!match){errEl.textContent='Nombre o PIN incorrecto';errEl.style.display='block';return;}
+function parseDate(s) {
+  var parts = s.split('-');
+  return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+}
+
+function fmtDate(s) {
+  if (!s) return '';
+  return parseDate(s).toLocaleDateString('es-ES', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function hoy() {
+  return dateStr(new Date());
+}
+
+function diaOcupado(espacioId, dia) {
+  for (var i = 0; i < reservas.length; i++) {
+    var r = reservas[i];
+    if (r.tipo !== espacioId) continue;
+    if (r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
   }
-  currentUser={nombre:fullName,tipo,userId:fullName.toLowerCase().replace(/\s+/g,'-')};
-  document.getElementById('ub-nombre-top').textContent=fullName;
-  const badges={tio:'<span class="badge badge-tio">Tío/a</span>',sobrino:'<span class="badge badge-sob">Sobrino/a</span>',admin:'<span class="badge badge-admin">Admin</span>'};
-  document.getElementById('ub-badge-top').innerHTML=badges[tipo];
-  document.getElementById('tab-admin-btn').style.display=tipo==='admin'?'':'none';
-  try{await loadReservas();}catch(e){}
-  showScreen('main');
-  showTab('reservar',document.querySelector('.nav-tab'));
-}
-function doLogout(){currentUser=null;document.getElementById('login-pin').value='';showScreen('login');}
-
-function initReservar(){
-  selectedEspacio=null; selectedFrom=null; selectedTo=null; selectedHabs=[];
-  document.getElementById('paso2').style.display='none';
-  document.getElementById('paso3').style.display='none';
-  renderEspacios();
+  return false;
 }
 
-function renderEspacios(){
-  document.getElementById('espacios-grid').innerHTML=ESPACIOS.map(e=>
-    '<button class="espacio-btn'+(selectedEspacio===e.id?' active':'')+'" onclick="selectEspacio(''+e.id+'')">'+
-    '<div class="esp-icon">'+e.icon+'</div>'+
-    '<div class="esp-name">'+e.nombre+'</div>'+
-    '<div class="esp-sub">'+e.habs.length+(e.habs.length===1?' espacio':' habitaciones')+'</div>'+
-    '</button>'
-  ).join('');
-}
-
-function selectEspacio(id){
-  selectedEspacio=id; selectedFrom=null; selectedTo=null; selectedHabs=[];
-  renderEspacios();
-  calViewDate=new Date();
-  document.getElementById('paso2').style.display='block';
-  document.getElementById('paso3').style.display='none';
-  renderCalendar();
-}
-
-function changeMonth(delta){
-  calViewDate=new Date(calViewDate.getFullYear(),calViewDate.getMonth()+delta,1);
-  renderCalendar();
-}
-
-function renderCalendar(){
-  const year=calViewDate.getFullYear(), month=calViewDate.getMonth();
-  const label=new Date(year,month,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});
-  document.getElementById('cal-month-label').textContent=label.charAt(0).toUpperCase()+label.slice(1);
-  const daysInMonth=new Date(year,month+1,0).getDate();
-  const firstDay=(new Date(year,month,1).getDay()+6)%7;
-  const todayStr=today();
-  let html='';
-  ['L','M','X','J','V','S','D'].forEach(d=>html+='<div class="cal-header">'+d+'</div>');
-  for(let i=0;i<firstDay;i++)html+='<div class="cal-day empty"></div>';
-  for(let d=1;d<=daysInMonth;d++){
-    const ds=dateStr(new Date(year,month,d));
-    const isPast=ds<todayStr;
-    const isOcc=isDayOccupied(selectedEspacio,ds);
-    const isSel=(selectedFrom&&selectedTo&&ds>=selectedFrom&&ds<selectedTo)||(selectedFrom&&!selectedTo&&ds===selectedFrom);
-    const isToday=ds===todayStr;
-    let cls='cal-day';
-    if(isPast)cls+=' past';
-    else if(isSel)cls+=' selected';
-    else if(isOcc)cls+=' occupied';
-    else cls+=' free';
-    if(isToday)cls+=' today';
-    const onclick=(!isPast&&!isOcc)?'onclick="selectDay(''+ds+'')"':'';
-    html+='<div class="'+cls+'" '+onclick+' title="'+ds+'">'+d+'</div>';
+function habOcupada(espacioId, hab, desde, hasta) {
+  for (var i = 0; i < reservas.length; i++) {
+    var r = reservas[i];
+    if (r.tipo !== espacioId) continue;
+    if (!(r.fecha_desde < hasta && r.fecha_hasta > desde)) continue;
+    if (r.rooms && r.rooms.indexOf(hab) >= 0) return true;
   }
-  document.getElementById('cal-grid').innerHTML=html;
+  return false;
 }
 
-function selectDay(ds){
-  if(!selectedFrom||selectedTo){
-    selectedFrom=ds; selectedTo=null; selectedHabs=[];
-    document.getElementById('paso3').style.display='none';
+function mostrarScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('screen-' + id).classList.add('active');
+  document.getElementById('topbar-login').style.display = id === 'login' ? 'flex' : 'none';
+  document.getElementById('topbar-main').style.display = id === 'main' ? 'flex' : 'none';
+}
+
+function mostrarTab(id) {
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.style.display = 'none'; });
+  document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('tab-' + id).style.display = 'block';
+  var btn = document.getElementById('tab-btn-' + id);
+  if (btn) btn.classList.add('active');
+  if (id === 'mis') cargarYMostrarMis();
+  if (id === 'admin') { cargarYMostrarAdmin(); cargarYMostrarCreds(); }
+  if (id === 'reservar') iniciarReservar();
+}
+
+function iniciarReservar() {
+  espacioActual = null;
+  desdeFecha = null;
+  hastaFecha = null;
+  habsSelec = [];
+  renderEspacios();
+  document.getElementById('paso2').style.display = 'none';
+  document.getElementById('paso3').style.display = 'none';
+}
+
+function renderEspacios() {
+  var html = '';
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    var e = ESPACIOS[i];
+    var cls = 'espacio-btn' + (espacioActual === e.id ? ' activo' : '');
+    html += '<button class="' + cls + '" data-id="' + e.id + '">';
+    html += '<div class="esp-icon">' + e.icon + '</div>';
+    html += '<div class="esp-name">' + e.nombre + '</div>';
+    html += '<div class="esp-sub">' + e.habs.length + (e.habs.length === 1 ? ' espacio' : ' habitaciones') + '</div>';
+    html += '</button>';
+  }
+  document.getElementById('espacios-grid').innerHTML = html;
+  document.querySelectorAll('.espacio-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      seleccionarEspacio(this.getAttribute('data-id'));
+    });
+  });
+}
+
+function seleccionarEspacio(id) {
+  espacioActual = id;
+  desdeFecha = null;
+  hastaFecha = null;
+  habsSelec = [];
+  calFecha = new Date();
+  renderEspacios();
+  document.getElementById('paso2').style.display = 'block';
+  document.getElementById('paso3').style.display = 'none';
+  renderCalendario();
+}
+
+function renderCalendario() {
+  var year = calFecha.getFullYear();
+  var month = calFecha.getMonth();
+  var label = new Date(year, month, 1).toLocaleDateString('es-ES', {month:'long', year:'numeric'});
+  document.getElementById('cal-mes').textContent = label.charAt(0).toUpperCase() + label.slice(1);
+  var diasEnMes = new Date(year, month + 1, 0).getDate();
+  var primerDia = (new Date(year, month, 1).getDay() + 6) % 7;
+  var hoyStr = hoy();
+  var html = '';
+  var dias = ['L','M','X','J','V','S','D'];
+  for (var d = 0; d < 7; d++) html += '<div class="cal-header">' + dias[d] + '</div>';
+  for (var i = 0; i < primerDia; i++) html += '<div class="cal-day vacio"></div>';
+  for (var d = 1; d <= diasEnMes; d++) {
+    var ds = dateStr(new Date(year, month, d));
+    var esPasado = ds < hoyStr;
+    var esOcup = diaOcupado(espacioActual, ds);
+    var esSelec = (desdeFecha && hastaFecha && ds >= desdeFecha && ds < hastaFecha) || (desdeFecha && !hastaFecha && ds === desdeFecha);
+    var esHoy = ds === hoyStr;
+    var cls = 'cal-day';
+    if (esPasado) cls += ' pasado';
+    else if (esSelec) cls += ' seleccionado';
+    else if (esOcup) cls += ' ocupado';
+    else cls += ' libre';
+    if (esHoy) cls += ' hoy';
+    html += '<div class="' + cls + '" data-dia="' + ds + '">' + d + '</div>';
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+  document.querySelectorAll('.cal-day.libre, .cal-day.seleccionado').forEach(function(el) {
+    el.addEventListener('click', function() {
+      seleccionarDia(this.getAttribute('data-dia'));
+    });
+  });
+}
+
+function seleccionarDia(ds) {
+  if (!desdeFecha || hastaFecha) {
+    desdeFecha = ds;
+    hastaFecha = null;
+    habsSelec = [];
+    document.getElementById('paso3').style.display = 'none';
   } else {
-    if(ds<=selectedFrom){selectedFrom=ds;selectedTo=null;document.getElementById('paso3').style.display='none';}
-    else {
-      // Check no occupied days in range
-      const esp=selectedEspacio;
-      let d=addDays(selectedFrom,0);
-      let hasOcc=false;
-      while(d<ds){
-        if(isDayOccupied(esp,d)){hasOcc=true;break;}
-        d=addDays(d,1);
+    if (ds <= desdeFecha) {
+      desdeFecha = ds;
+      hastaFecha = null;
+      document.getElementById('paso3').style.display = 'none';
+    } else {
+      var hayOcup = false;
+      var cur = parseDate(desdeFecha);
+      var fin = parseDate(ds);
+      cur.setDate(cur.getDate() + 1);
+      while (cur < fin) {
+        if (diaOcupado(espacioActual, dateStr(cur))) { hayOcup = true; break; }
+        cur.setDate(cur.getDate() + 1);
       }
-      if(hasOcc){
-        document.getElementById('res-error').textContent='Hay días ocupados en ese rango. Elige otras fechas.';
-        document.getElementById('res-error').style.display='block';
-        setTimeout(()=>{document.getElementById('res-error').style.display='none';},3000);
-        selectedFrom=ds; selectedTo=null;
+      if (hayOcup) {
+        var errEl = document.getElementById('res-error');
+        errEl.textContent = 'Hay dias ocupados en ese rango. Elige otras fechas.';
+        errEl.style.display = 'block';
+        setTimeout(function() { errEl.style.display = 'none'; }, 3000);
+        desdeFecha = ds;
+        hastaFecha = null;
       } else {
-        selectedTo=ds;
-        setupPaso3();
+        hastaFecha = ds;
+        mostrarPaso3();
       }
     }
   }
-  renderCalendar();
+  renderCalendario();
 }
 
-function setupPaso3(){
-  const esp=ESPACIOS.find(e=>e.id===selectedEspacio);
-  document.getElementById('resumen-fechas').innerHTML='<strong>'+esp.nombre+'</strong> · '+fmtDate(selectedFrom)+' → '+fmtDate(selectedTo);
-  if(esp.habs.length>1){
-    document.getElementById('hab-section').style.display='block';
+function mostrarPaso3() {
+  var esp = null;
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    if (ESPACIOS[i].id === espacioActual) { esp = ESPACIOS[i]; break; }
+  }
+  document.getElementById('resumen-fechas').innerHTML = '<strong>' + esp.nombre + '</strong> &nbsp;|&nbsp; Entrada: ' + fmtDate(desdeFecha) + ' &nbsp;&rarr;&nbsp; Salida: ' + fmtDate(hastaFecha);
+  if (esp.habs.length > 1) {
+    document.getElementById('hab-section').style.display = 'block';
     renderHabs();
   } else {
-    // Oficina: única hab, auto-select
-    selectedHabs=[esp.habs[0]];
-    document.getElementById('hab-section').style.display='none';
+    habsSelec = [esp.habs[0]];
+    document.getElementById('hab-section').style.display = 'none';
   }
-  document.getElementById('res-error').style.display='none';
-  document.getElementById('res-ok').style.display='none';
-  document.getElementById('res-notas').value='';
-  document.getElementById('paso3').style.display='block';
+  document.getElementById('res-error').style.display = 'none';
+  document.getElementById('res-ok').style.display = 'none';
+  document.getElementById('inp-notas').value = '';
+  document.getElementById('paso3').style.display = 'block';
 }
 
-function renderHabs(){
-  const esp=ESPACIOS.find(e=>e.id===selectedEspacio);
-  document.getElementById('hab-grid').innerHTML=esp.habs.map(h=>{
-    const occ=isHabOccupied(selectedEspacio,h,selectedFrom,selectedTo);
-    const sel=selectedHabs.includes(h);
-    return '<div class="hab-item'+(sel?' selected':'')+(occ?' occupied':'')+'" onclick="'+(occ?'':'toggleHab(''+h+'')')+'" title="'+(occ?'Ocupada':'')+'">'+
-      '<div class="hab-name">'+h+'</div>'+
-      '<div class="hab-sub">'+(occ?'Ocupada':'Disponible')+'</div></div>';
-  }).join('');
+function renderHabs() {
+  var esp = null;
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    if (ESPACIOS[i].id === espacioActual) { esp = ESPACIOS[i]; break; }
+  }
+  var html = '';
+  for (var i = 0; i < esp.habs.length; i++) {
+    var h = esp.habs[i];
+    var ocup = habOcupada(espacioActual, h, desdeFecha, hastaFecha);
+    var selec = habsSelec.indexOf(h) >= 0;
+    var cls = 'hab-item' + (selec ? ' selec' : '') + (ocup ? ' ocup' : '');
+    html += '<div class="' + cls + '" data-hab="' + h + '">';
+    html += '<div class="hab-name">' + h + '</div>';
+    html += '<div class="hab-sub">' + (ocup ? 'Ocupada' : 'Disponible') + '</div>';
+    html += '</div>';
+  }
+  document.getElementById('hab-grid').innerHTML = html;
+  document.querySelectorAll('.hab-item:not(.ocup)').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var h = this.getAttribute('data-hab');
+      var idx = habsSelec.indexOf(h);
+      if (idx >= 0) habsSelec.splice(idx, 1);
+      else habsSelec.push(h);
+      renderHabs();
+    });
+  });
 }
 
-function toggleHab(h){
-  selectedHabs=selectedHabs.includes(h)?selectedHabs.filter(x=>x!==h):[...selectedHabs,h];
-  renderHabs();
+function confirmarReserva() {
+  var errEl = document.getElementById('res-error');
+  var okEl = document.getElementById('res-ok');
+  errEl.style.display = 'none';
+  okEl.style.display = 'none';
+  if (!desdeFecha || !hastaFecha) { errEl.textContent = 'Selecciona fechas primero'; errEl.style.display = 'block'; return; }
+  var esp = null;
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    if (ESPACIOS[i].id === espacioActual) { esp = ESPACIOS[i]; break; }
+  }
+  if (esp.habs.length > 1 && habsSelec.length === 0) { errEl.textContent = 'Selecciona al menos una habitacion'; errEl.style.display = 'block'; return; }
+  var notas = document.getElementById('inp-notas').value.trim();
+  var nueva = {
+    id: 'r' + Date.now(),
+    user_id: currentUser.userId,
+    nombre: currentUser.nombre,
+    tipo: espacioActual,
+    rooms: habsSelec,
+    fecha_desde: desdeFecha,
+    fecha_hasta: hastaFecha,
+    notas: notas
+  };
+  sbFetch('/rest/v1/reservas', {
+    method: 'POST',
+    prefer: 'return=minimal',
+    body: JSON.stringify(nueva)
+  }).then(function() {
+    return cargarReservas();
+  }).then(function() {
+    okEl.textContent = 'Reserva confirmada: ' + esp.nombre + ', ' + fmtDate(desdeFecha) + ' - ' + fmtDate(hastaFecha);
+    okEl.style.display = 'block';
+    desdeFecha = null;
+    hastaFecha = null;
+    habsSelec = [];
+    document.getElementById('paso3').style.display = 'none';
+    renderCalendario();
+    setTimeout(function() { okEl.style.display = 'none'; }, 4000);
+  }).catch(function(e) {
+    errEl.textContent = 'Error al guardar: ' + e.message;
+    errEl.style.display = 'block';
+  });
 }
 
-async function doReservar(){
-  const errEl=document.getElementById('res-error'), okEl=document.getElementById('res-ok');
-  errEl.style.display='none'; okEl.style.display='none';
-  const err=msg=>{errEl.textContent=msg;errEl.style.display='block';};
-  if(!selectedFrom||!selectedTo)return err('Selecciona las fechas en el calendario primero');
-  const esp=ESPACIOS.find(e=>e.id===selectedEspacio);
-  if(esp.habs.length>1&&selectedHabs.length===0)return err('Selecciona al menos una habitación');
-  const notas=document.getElementById('res-notas').value.trim();
-  const nueva={id:'r'+Date.now(),userId:currentUser.userId,nombre:currentUser.nombre,espacio:selectedEspacio,habs:selectedHabs,from:selectedFrom,to:selectedTo,notas};
-  try{
-    await addReserva(nueva);
-    await loadReservas();
-    okEl.textContent='✓ Reserva confirmada: '+esp.nombre+', '+fmtDate(selectedFrom)+' → '+fmtDate(selectedTo);
-    okEl.style.display='block';
-    selectedFrom=null; selectedTo=null; selectedHabs=[];
-    document.getElementById('paso3').style.display='none';
-    renderCalendar();
-    setTimeout(()=>{okEl.style.display='none';},4000);
-  }catch(e){err('Error al guardar: '+e.message);}
+function resHTML(r, canCancel) {
+  var esp = null;
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    if (ESPACIOS[i].id === r.tipo) { esp = ESPACIOS[i]; break; }
+  }
+  var nombre_esp = esp ? esp.nombre : r.tipo;
+  var habs = r.rooms && r.rooms.length > 0 ? r.rooms.join(', ') : '';
+  var cancelBtn = canCancel ? '<button class="btn btn-danger" data-id="' + r.id + '">X Cancelar</button>' : '';
+  return '<div class="res-item"><div class="res-info"><span class="chip">' + nombre_esp + '</span> <strong>' + r.nombre + '</strong>' +
+    '<div class="res-meta">Fechas: ' + fmtDate(r.fecha_desde) + ' - ' + fmtDate(r.fecha_hasta) + '</div>' +
+    (habs ? '<div class="res-meta">Habitaciones: ' + habs + '</div>' : '') +
+    (r.notas ? '<div class="res-meta">' + r.notas + '</div>' : '') +
+    '</div>' + cancelBtn + '</div>';
 }
 
-function resItemHTML(r,canCancel){
-  const esp=ESPACIOS.find(e=>e.id===r.tipo)||{nombre:r.tipo};
-  const habs=r.rooms&&r.rooms.length>0?r.rooms.join(', '):'';
-  const cancelBtn=canCancel?'<button class="btn btn-danger" onclick="cancelarReserva(''+r.id+'')">✕ Cancelar</button>':'';
-  return '<div class="res-item"><div class="res-info"><span class="chip chip-hab">'+esp.nombre+'</span> <strong>'+r.nombre+'</strong>'+
-    '<div class="res-meta">📅 '+fmtDate(r.fecha_desde)+' → '+fmtDate(r.fecha_hasta)+'</div>'+
-    (habs?'<div class="res-meta">🛏 '+habs+'</div>':'')+
-    (r.notas?'<div class="res-meta" style="font-style:italic">📝 '+r.notas+'</div>':'')+
-    '</div>'+cancelBtn+'</div>';
-}
-async function renderMisReservas(){
-  await loadReservas();
-  const mis=reservas.filter(r=>r.user_id===currentUser.userId);
-  document.getElementById('mis-res-list').innerHTML=mis.length?mis.map(r=>resItemHTML(r,true)).join(''):'<p style="color:#888;font-size:14px">No tienes reservas activas</p>';
-}
-async function renderAdmin(){
-  await loadReservas();
-  document.getElementById('admin-res-list').innerHTML=reservas.length?reservas.map(r=>resItemHTML(r,true)).join(''):'<p style="color:#888;font-size:14px">No hay reservas</p>';
-}
-async function cancelarReserva(id){
-  const r=reservas.find(x=>x.id===id);if(!r)return;
-  if(currentUser.tipo!=='admin'&&r.user_id!==currentUser.userId){alert('Solo puedes cancelar tus propias reservas');return;}
-  if(!confirm('¿Cancelar reserva de '+r.nombre+' del '+fmtDate(r.fecha_desde)+' al '+fmtDate(r.fecha_hasta)+'?'))return;
-  try{await deleteReserva(id);await loadReservas();renderMisReservas();renderAdmin();}
-  catch(e){alert('Error al cancelar');}
-}
-async function renderAdminCreds(){
-  await loadAdmins();
-  document.getElementById('admin-creds-list').innerHTML='<table class="admin-table"><tr><td style="font-weight:600;color:#666">Nombre</td><td style="font-weight:600;color:#666">PIN</td><td></td></tr>'+
-    adminCreds.map(a=>'<tr><td>'+a.nombre+'</td><td style="letter-spacing:2px">••••</td><td style="text-align:right"><button class="btn btn-danger" onclick="removeAdmin('+a.id+',''+a.nombre.replace(/'/g,"\'")+'')" title="Eliminar">🗑</button></td></tr>').join('')+'</table>';
-}
-async function removeAdmin(id,nombre){
-  if(adminCreds.length<=1){alert('Debe haber al menos un administrador');return;}
-  if(nombre===currentUser.nombre){alert('No puedes eliminarte a ti mismo');return;}
-  if(!confirm('¿Eliminar a '+nombre+' como administrador?'))return;
-  try{await deleteAdmin(id);await renderAdminCreds();}catch(e){alert('Error al eliminar');}
-}
-async function saveAdminCred(){
-  const nombre=document.getElementById('new-admin-nombre').value.trim(),pin=document.getElementById('new-admin-pin').value;
-  const errEl=document.getElementById('admin-cred-error'),okEl=document.getElementById('admin-cred-ok');
-  errEl.style.display='none';okEl.style.display='none';
-  if(!nombre){errEl.textContent='Introduce el nombre completo';errEl.style.display='block';return;}
-  if(pin.length<4){errEl.textContent='El PIN debe tener al menos 4 caracteres';errEl.style.display='block';return;}
-  try{await upsertAdmin(nombre,pin);document.getElementById('new-admin-nombre').value='';document.getElementById('new-admin-pin').value='';okEl.textContent='✓ Administrador guardado';okEl.style.display='block';await renderAdminCreds();setTimeout(()=>{okEl.style.display='none';},3000);}
-  catch(e){errEl.textContent='Error al guardar';errEl.style.display='block';}
+function cargarYMostrarMis() {
+  cargarReservas().then(function() {
+    var mis = reservas.filter(function(r) { return r.user_id === currentUser.userId; });
+    var el = document.getElementById('mis-lista');
+    if (mis.length === 0) { el.innerHTML = '<p style="color:#888;font-size:14px">No tienes reservas activas</p>'; return; }
+    el.innerHTML = mis.map(function(r) { return resHTML(r, true); }).join('');
+    el.querySelectorAll('.btn-danger').forEach(function(btn) {
+      btn.addEventListener('click', function() { cancelarReserva(this.getAttribute('data-id')); });
+    });
+  });
 }
 
-showScreen('login');
+function cargarYMostrarAdmin() {
+  cargarReservas().then(function() {
+    var el = document.getElementById('admin-lista');
+    if (reservas.length === 0) { el.innerHTML = '<p style="color:#888;font-size:14px">No hay reservas</p>'; return; }
+    el.innerHTML = reservas.map(function(r) { return resHTML(r, true); }).join('');
+    el.querySelectorAll('.btn-danger').forEach(function(btn) {
+      btn.addEventListener('click', function() { cancelarReserva(this.getAttribute('data-id')); });
+    });
+  });
+}
+
+function cancelarReserva(id) {
+  var r = null;
+  for (var i = 0; i < reservas.length; i++) { if (reservas[i].id === id) { r = reservas[i]; break; } }
+  if (!r) return;
+  if (currentUser.tipo !== 'admin' && r.user_id !== currentUser.userId) { alert('Solo puedes cancelar tus propias reservas'); return; }
+  if (!confirm('Cancelar reserva de ' + r.nombre + ' del ' + fmtDate(r.fecha_desde) + ' al ' + fmtDate(r.fecha_hasta) + '?')) return;
+  sbFetch('/rest/v1/reservas?id=eq.' + id, { method: 'DELETE' }).then(function() {
+    return cargarReservas();
+  }).then(function() {
+    cargarYMostrarMis();
+    if (currentUser.tipo === 'admin') cargarYMostrarAdmin();
+  }).catch(function() { alert('Error al cancelar'); });
+}
+
+function cargarYMostrarCreds() {
+  cargarAdmins().then(function() {
+    var html = '<table class="admin-table"><tr><td style="font-weight:600;color:#666">Nombre</td><td style="font-weight:600;color:#666">PIN</td><td></td></tr>';
+    for (var i = 0; i < adminCreds.length; i++) {
+      var a = adminCreds[i];
+      html += '<tr><td>' + a.nombre + '</td><td style="letter-spacing:2px">...</td><td style="text-align:right"><button class="btn btn-danger" data-admin-id="' + a.id + '" data-admin-nombre="' + a.nombre + '">Eliminar</button></td></tr>';
+    }
+    html += '</table>';
+    document.getElementById('admin-creds').innerHTML = html;
+    document.querySelectorAll('[data-admin-id]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        eliminarAdmin(parseInt(this.getAttribute('data-admin-id')), this.getAttribute('data-admin-nombre'));
+      });
+    });
+  });
+}
+
+function eliminarAdmin(id, nombre) {
+  if (adminCreds.length <= 1) { alert('Debe haber al menos un administrador'); return; }
+  if (nombre === currentUser.nombre) { alert('No puedes eliminarte a ti mismo'); return; }
+  if (!confirm('Eliminar a ' + nombre + ' como administrador?')) return;
+  sbFetch('/rest/v1/administradores?id=eq.' + id, { method: 'DELETE' }).then(function() {
+    cargarYMostrarCreds();
+  }).catch(function() { alert('Error al eliminar'); });
+}
+
+function guardarAdmin() {
+  var nombre = document.getElementById('inp-admin-nombre').value.trim();
+  var pin = document.getElementById('inp-admin-pin').value;
+  var errEl = document.getElementById('admin-cred-error');
+  var okEl = document.getElementById('admin-cred-ok');
+  errEl.style.display = 'none'; okEl.style.display = 'none';
+  if (!nombre) { errEl.textContent = 'Introduce el nombre completo'; errEl.style.display = 'block'; return; }
+  if (pin.length < 4) { errEl.textContent = 'El PIN debe tener al menos 4 caracteres'; errEl.style.display = 'block'; return; }
+  sbFetch('/rest/v1/administradores', {
+    method: 'POST',
+    prefer: 'resolution=merge-duplicates,return=minimal',
+    body: JSON.stringify({ nombre: nombre, pin: pin })
+  }).then(function() {
+    document.getElementById('inp-admin-nombre').value = '';
+    document.getElementById('inp-admin-pin').value = '';
+    okEl.textContent = 'Administrador guardado';
+    okEl.style.display = 'block';
+    cargarYMostrarCreds();
+    setTimeout(function() { okEl.style.display = 'none'; }, 3000);
+  }).catch(function() { errEl.textContent = 'Error al guardar'; errEl.style.display = 'block'; });
+}
+
+function entrar() {
+  var nombre = document.getElementById('inp-nombre').value.trim();
+  var ap1 = document.getElementById('inp-ap1').value.trim();
+  var ap2 = document.getElementById('inp-ap2').value.trim();
+  var tipo = document.getElementById('inp-tipo').value;
+  var pin = document.getElementById('inp-pin').value;
+  var errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!nombre || !ap1) { errEl.textContent = 'Introduce nombre y al menos un apellido'; errEl.style.display = 'block'; return; }
+  if (!tipo) { errEl.textContent = 'Selecciona tu tipo de familiar'; errEl.style.display = 'block'; return; }
+  var fullName = [nombre, ap1, ap2].filter(function(x) { return x; }).join(' ');
+  if (tipo === 'admin') {
+    if (!pin) { errEl.textContent = 'Introduce tu PIN de administrador'; errEl.style.display = 'block'; return; }
+    cargarAdmins().then(function() {
+      var match = null;
+      for (var i = 0; i < adminCreds.length; i++) {
+        if (adminCreds[i].nombre.toLowerCase().trim() === fullName.toLowerCase().trim() && adminCreds[i].pin === pin) {
+          match = adminCreds[i]; break;
+        }
+      }
+      if (!match) { errEl.textContent = 'Nombre o PIN incorrecto'; errEl.style.display = 'block'; return; }
+      entrarComoUsuario(fullName, tipo);
+    }).catch(function(e) {
+      errEl.textContent = 'Error de conexion: ' + e.message;
+      errEl.style.display = 'block';
+    });
+  } else {
+    cargarReservas().then(function() {
+      entrarComoUsuario(fullName, tipo);
+    }).catch(function(e) {
+      errEl.textContent = 'Error de conexion: ' + e.message;
+      errEl.style.display = 'block';
+    });
+  }
+}
+
+function entrarComoUsuario(fullName, tipo) {
+  currentUser = {
+    nombre: fullName,
+    tipo: tipo,
+    userId: fullName.toLowerCase().replace(/\s+/g, '-')
+  };
+  document.getElementById('ub-nombre').textContent = fullName;
+  var badges = { tio: '<span class="badge badge-tio">Tio/a</span>', sobrino: '<span class="badge badge-sob">Sobrino/a</span>', admin: '<span class="badge badge-admin">Admin</span>' };
+  document.getElementById('ub-badge').innerHTML = badges[tipo];
+  document.getElementById('tab-btn-admin').style.display = tipo === 'admin' ? '' : 'none';
+  mostrarScreen('main');
+  mostrarTab('reservar');
+}
+
+document.getElementById('inp-tipo').addEventListener('change', function() {
+  document.getElementById('pin-section').style.display = this.value === 'admin' ? 'block' : 'none';
+});
+document.getElementById('btn-entrar').addEventListener('click', entrar);
+document.getElementById('btn-salir').addEventListener('click', function() {
+  currentUser = null;
+  document.getElementById('inp-pin').value = '';
+  mostrarScreen('login');
+});
+document.getElementById('tab-btn-reservar').addEventListener('click', function() { mostrarTab('reservar'); });
+document.getElementById('tab-btn-mis').addEventListener('click', function() { mostrarTab('mis'); });
+document.getElementById('tab-btn-admin').addEventListener('click', function() { mostrarTab('admin'); });
+document.getElementById('btn-mes-ant').addEventListener('click', function() {
+  calFecha = new Date(calFecha.getFullYear(), calFecha.getMonth() - 1, 1);
+  renderCalendario();
+});
+document.getElementById('btn-mes-sig').addEventListener('click', function() {
+  calFecha = new Date(calFecha.getFullYear(), calFecha.getMonth() + 1, 1);
+  renderCalendario();
+});
+document.getElementById('btn-confirmar').addEventListener('click', confirmarReserva);
+document.getElementById('btn-guardar-admin').addEventListener('click', guardarAdmin);
+
+mostrarScreen('login');
 </script>
 </body>
 </html>
