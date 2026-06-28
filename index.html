@@ -78,6 +78,10 @@ input:focus,select:focus{border-color:#8b6f47}
 .hab-name{font-weight:600;color:#1a1a1a;margin-bottom:2px}
 .hab-sub{color:#888;font-size:11px}
 .step-title{font-size:12px;font-weight:700;color:#8b6f47;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.bloqueo-btn{border-color:#8b1f1f !important;background:#fff8f8}
+.bloqueo-btn:hover{border-color:#8b1f1f !important;background:#fdf0f0 !important}
+.bloqueo-btn.activo{border-color:#8b1f1f !important;background:#fdf0f0 !important}
+.bloqueo-btn .esp-name{color:#8b1f1f}
 </style>
 </head>
 <body>
@@ -218,7 +222,8 @@ var ESPACIOS = [
   { id:'b1', nombre:'Bungalow 1', icon:'🛖', habs:['Hab. 1','Hab. 2','Hab. 3'] },
   { id:'b2', nombre:'Bungalow 2', icon:'🛖', habs:['Hab. 1','Hab. 2','Hab. 3'] },
   { id:'b3', nombre:'Bungalow 3', icon:'🛖', habs:['Hab. 1','Hab. 2','Hab. 3'] },
-  { id:'of', nombre:'Oficina', icon:'🏢', habs:['Oficina completa'] }
+  { id:'of', nombre:'Oficina', icon:'🏢', habs:['Oficina completa'] },
+  { id:'bloqueo', nombre:'Bloquear finca', icon:'🔒', habs:['Completo'], soloTio: true }
 ];
 
 var reservas = [];
@@ -288,21 +293,38 @@ function hoy() {
 }
 
 function diaOcupado(espacioId, dia) {
+  // Para bloqueo total: dia ocupado si hay cualquier reserva de bloqueo
+  if (espacioId === 'bloqueo') {
+    for (var i = 0; i < reservas.length; i++) {
+      var r = reservas[i];
+      if (r.tipo === 'bloqueo' && r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
+    }
+    return false;
+  }
   var esp = null;
   for (var i = 0; i < ESPACIOS.length; i++) {
     if (ESPACIOS[i].id === espacioId) { esp = ESPACIOS[i]; break; }
   }
   if (!esp) return false;
-  // Oficina: bloquear si hay cualquier reserva
   if (esp.habs.length === 1) {
     for (var i = 0; i < reservas.length; i++) {
       var r = reservas[i];
       if (r.tipo !== espacioId) continue;
       if (r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
     }
+    // También ocupado si hay bloqueo total
+    for (var i = 0; i < reservas.length; i++) {
+      var r = reservas[i];
+      if (r.tipo === 'bloqueo' && r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
+    }
     return false;
   }
   // Para espacios con varias habitaciones: bloquear solo si TODAS están ocupadas
+  // o si hay un bloqueo total
+  for (var i = 0; i < reservas.length; i++) {
+    var r = reservas[i];
+    if (r.tipo === 'bloqueo' && r.fecha_desde <= dia && r.fecha_hasta > dia) return true;
+  }
   var habsOcupadas = [];
   for (var i = 0; i < reservas.length; i++) {
     var r = reservas[i];
@@ -362,11 +384,13 @@ function renderEspacios() {
   var html = '';
   for (var i = 0; i < ESPACIOS.length; i++) {
     var e = ESPACIOS[i];
+    if (e.soloTio && currentUser.tipo === 'sobrino') continue;
     var cls = 'espacio-btn' + (espacioActual === e.id ? ' activo' : '');
+    if (e.id === 'bloqueo') cls += ' bloqueo-btn';
     html += '<button class="' + cls + '" data-id="' + e.id + '">';
     html += '<div class="esp-icon">' + e.icon + '</div>';
     html += '<div class="esp-name">' + e.nombre + '</div>';
-    html += '<div class="esp-sub">' + e.habs.length + (e.habs.length === 1 ? ' espacio' : ' habitaciones') + '</div>';
+    html += '<div class="esp-sub">' + (e.id === 'bloqueo' ? 'Todos los espacios' : e.habs.length + (e.habs.length === 1 ? ' espacio' : ' habitaciones')) + '</div>';
     html += '</button>';
   }
   document.getElementById('espacios-grid').innerHTML = html;
@@ -464,11 +488,16 @@ function mostrarPaso3() {
   for (var i = 0; i < ESPACIOS.length; i++) {
     if (ESPACIOS[i].id === espacioActual) { esp = ESPACIOS[i]; break; }
   }
-  document.getElementById('resumen-fechas').innerHTML = '<strong>' + esp.nombre + '</strong> &nbsp;|&nbsp; Entrada: ' + fmtDate(desdeFecha) + ' &nbsp;&rarr;&nbsp; Salida: ' + fmtDate(hastaFecha);
-  if (esp.habs.length > 1) {
+  if (espacioActual === 'bloqueo') {
+    document.getElementById('resumen-fechas').innerHTML = '<strong>🔒 Bloqueo total de la finca</strong> &nbsp;|&nbsp; Entrada: ' + fmtDate(desdeFecha) + ' &nbsp;&rarr;&nbsp; Salida: ' + fmtDate(hastaFecha) + '<br><span style="font-size:12px;color:#8b1f1f">Se reservarán todos los espacios de la finca para estas fechas</span>';
+    habsSelec = ['Completo'];
+    document.getElementById('hab-section').style.display = 'none';
+  } else if (esp.habs.length > 1) {
+    document.getElementById('resumen-fechas').innerHTML = '<strong>' + esp.nombre + '</strong> &nbsp;|&nbsp; Entrada: ' + fmtDate(desdeFecha) + ' &nbsp;&rarr;&nbsp; Salida: ' + fmtDate(hastaFecha);
     document.getElementById('hab-section').style.display = 'block';
     renderHabs();
   } else {
+    document.getElementById('resumen-fechas').innerHTML = '<strong>' + esp.nombre + '</strong> &nbsp;|&nbsp; Entrada: ' + fmtDate(desdeFecha) + ' &nbsp;&rarr;&nbsp; Salida: ' + fmtDate(hastaFecha);
     habsSelec = [esp.habs[0]];
     document.getElementById('hab-section').style.display = 'none';
   }
@@ -551,35 +580,32 @@ function confirmarReserva() {
     }
   }
 
-  if (currentUser.tipo === 'tio') {
-    // Tios: si reservan TODAS las habs de la casa principal o un bungalow entero, es bloqueo total
-    if (habsSelec.length === esp.habs.length && esp.habs.length > 1) {
-      // Verificar 4 semanas de antelacion
-      if (semanasAntelacion < 4) {
-        errEl.textContent = 'Para bloquear un espacio completo se necesitan al menos 4 semanas de antelacion.';
-        errEl.style.display = 'block'; return;
-      }
-      // Verificar que no sea octubre
-      var mesEntrada = entrada.getMonth(); // 9 = octubre
-      if (mesEntrada === 9) {
-        errEl.textContent = 'No esta permitido bloquear la finca en octubre.';
-        errEl.style.display = 'block'; return;
-      }
-      // Verificar maximo 2 bloqueos totales al ano
-      var anioEntrada = entrada.getFullYear();
-      var bloqueosTio = 0;
-      for (var i = 0; i < reservas.length; i++) {
-        var r = reservas[i];
-        if (r.user_id !== currentUser.userId) continue;
-        if (!r.fecha_desde.startsWith(anioEntrada)) continue;
-        var espR = null;
-        for (var j = 0; j < ESPACIOS.length; j++) { if (ESPACIOS[j].id === r.tipo) { espR = ESPACIOS[j]; break; } }
-        if (espR && r.rooms && r.rooms.length === espR.habs.length && espR.habs.length > 1) bloqueosTio++;
-      }
-      if (bloqueosTio >= 2) {
-        errEl.textContent = 'Ya has realizado 2 bloqueos completos este ano. No puedes hacer mas.';
-        errEl.style.display = 'block'; return;
-      }
+  if (espacioActual === 'bloqueo') {
+    // Reglas para bloqueo total de la finca
+    if (currentUser.tipo === 'sobrino') {
+      errEl.textContent = 'Los sobrinos no pueden bloquear la finca al completo.';
+      errEl.style.display = 'block'; return;
+    }
+    if (semanasAntelacion < 4) {
+      errEl.textContent = 'Para bloquear la finca completa se necesitan al menos 4 semanas de antelacion.';
+      errEl.style.display = 'block'; return;
+    }
+    var mesEntrada = entrada.getMonth();
+    if (mesEntrada === 9) {
+      errEl.textContent = 'No esta permitido bloquear la finca en octubre.';
+      errEl.style.display = 'block'; return;
+    }
+    var anioEntrada = entrada.getFullYear();
+    var bloqueosTio = 0;
+    for (var i = 0; i < reservas.length; i++) {
+      var r = reservas[i];
+      if (r.user_id !== currentUser.userId) continue;
+      if (r.tipo !== 'bloqueo') continue;
+      if (r.fecha_desde.startsWith(String(anioEntrada))) bloqueosTio++;
+    }
+    if (bloqueosTio >= 2) {
+      errEl.textContent = 'Ya has realizado 2 bloqueos totales este ano. No puedes hacer mas.';
+      errEl.style.display = 'block'; return;
     }
   }
   var notas = document.getElementById('inp-notas').value.trim();
