@@ -143,6 +143,7 @@ input:focus,select:focus{border-color:#8b6f47}
 
   <div id="tab-reservar" class="tab-content">
     <div class="card">
+      <div id="info-normas" style="display:none;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.6"></div>
       <div class="step-title">Paso 1 - Elige un espacio</div>
       <div class="espacios-grid" id="espacios-grid"></div>
       <div id="paso2" style="display:none">
@@ -516,6 +517,71 @@ function confirmarReserva() {
     if (ESPACIOS[i].id === espacioActual) { esp = ESPACIOS[i]; break; }
   }
   if (esp.habs.length > 1 && habsSelec.length === 0) { errEl.textContent = 'Selecciona al menos una habitacion'; errEl.style.display = 'block'; return; }
+
+  var hoy = new Date(); hoy.setHours(0,0,0,0);
+  var entrada = parseDate(desdeFecha);
+  var semanasAntelacion = (entrada - hoy) / (7 * 24 * 60 * 60 * 1000);
+  var esReservaTotalFinca = (habsSelec.length === esp.habs.length && esp.habs.length > 1 && espacioActual !== 'of');
+  var esBloqueoTotal = false;
+
+  // Comprobar si es bloqueo total (todas las habs de todos los espacios)
+  // Lo consideramos bloqueo total si reserva todas las habs de Casa Principal Y todos los bungalows
+  // Por simplicidad: si selecciona todas las habs del espacio actual y es la casa principal
+  if (currentUser.tipo === 'sobrino') {
+    if (semanasAntelacion > 3) {
+      errEl.textContent = 'Los sobrinos no pueden reservar con mas de 3 semanas de antelacion. La fecha de entrada es demasiado lejana.';
+      errEl.style.display = 'block'; return;
+    }
+    // Sobrinos no pueden bloquear la finca AL COMPLETO:
+    // esto significa tener reservas que cubran TODAS las habs de TODOS los espacios en las mismas fechas
+    var totalHabsFinca = 0;
+    for (var i = 0; i < ESPACIOS.length; i++) totalHabsFinca += ESPACIOS[i].habs.length;
+    var habsOcupadasTotal = habsSelec.length; // las que intenta reservar ahora
+    // Sumar las que ya tiene reservadas en esas fechas
+    for (var i = 0; i < reservas.length; i++) {
+      var r = reservas[i];
+      if (r.user_id !== currentUser.userId) continue;
+      if (!(r.fecha_desde < hastaFecha && r.fecha_hasta > desdeFecha)) continue;
+      if (r.tipo === espacioActual) continue; // las del espacio actual ya se cuentan arriba
+      habsOcupadasTotal += (r.rooms ? r.rooms.length : 0);
+    }
+    if (habsOcupadasTotal >= totalHabsFinca) {
+      errEl.textContent = 'Los sobrinos no pueden bloquear la finca al completo.';
+      errEl.style.display = 'block'; return;
+    }
+  }
+
+  if (currentUser.tipo === 'tio') {
+    // Tios: si reservan TODAS las habs de la casa principal o un bungalow entero, es bloqueo total
+    if (habsSelec.length === esp.habs.length && esp.habs.length > 1) {
+      // Verificar 4 semanas de antelacion
+      if (semanasAntelacion < 4) {
+        errEl.textContent = 'Para bloquear un espacio completo se necesitan al menos 4 semanas de antelacion.';
+        errEl.style.display = 'block'; return;
+      }
+      // Verificar que no sea octubre
+      var mesEntrada = entrada.getMonth(); // 9 = octubre
+      if (mesEntrada === 9) {
+        errEl.textContent = 'No esta permitido bloquear la finca en octubre.';
+        errEl.style.display = 'block'; return;
+      }
+      // Verificar maximo 2 bloqueos totales al ano
+      var anioEntrada = entrada.getFullYear();
+      var bloqueosTio = 0;
+      for (var i = 0; i < reservas.length; i++) {
+        var r = reservas[i];
+        if (r.user_id !== currentUser.userId) continue;
+        if (!r.fecha_desde.startsWith(anioEntrada)) continue;
+        var espR = null;
+        for (var j = 0; j < ESPACIOS.length; j++) { if (ESPACIOS[j].id === r.tipo) { espR = ESPACIOS[j]; break; } }
+        if (espR && r.rooms && r.rooms.length === espR.habs.length && espR.habs.length > 1) bloqueosTio++;
+      }
+      if (bloqueosTio >= 2) {
+        errEl.textContent = 'Ya has realizado 2 bloqueos completos este ano. No puedes hacer mas.';
+        errEl.style.display = 'block'; return;
+      }
+    }
+  }
   var notas = document.getElementById('inp-notas').value.trim();
   var nueva = {
     id: 'r' + Date.now(),
@@ -696,6 +762,22 @@ function entrarComoUsuario(fullName, tipo) {
   document.getElementById('tab-btn-admin').style.display = tipo === 'admin' ? '' : 'none';
   mostrarScreen('main');
   mostrarTab('reservar');
+  var infoEl = document.getElementById('info-normas');
+  if (tipo === 'sobrino') {
+    infoEl.style.display = 'block';
+    infoEl.style.background = '#f0f7e8';
+    infoEl.style.borderLeft = '3px solid #5a8a3a';
+    infoEl.style.color = '#2d4a1a';
+    infoEl.innerHTML = '<strong>Normas de reserva para sobrinos/as</strong><br>No puedes reservar con más de <strong>3 semanas de antelación</strong>. No puedes bloquear la <strong>finca al completo</strong> (todos los espacios simultáneamente).';
+  } else if (tipo === 'tio') {
+    infoEl.style.display = 'block';
+    infoEl.style.background = '#e8f0fb';
+    infoEl.style.borderLeft = '3px solid #3a6bbf';
+    infoEl.style.color = '#1a3a6e';
+    infoEl.innerHTML = '<strong>Normas de reserva para tios/as</strong><br>Puedes reservar habitaciones sueltas sin limite de antelacion. Para <strong>bloquear la finca completa</strong> debes hacerlo con <strong>4 semanas de antelacion</strong>, maximo <strong>2 veces al ano</strong> y nunca en <strong>octubre</strong>.';
+  } else {
+    infoEl.style.display = 'none';
+  }
 }
 
 document.getElementById('inp-tipo').addEventListener('change', function() {
