@@ -82,6 +82,31 @@ input:focus,select:focus{border-color:#8b6f47}
 .bloqueo-btn:hover{border-color:#8b1f1f !important;background:#fdf0f0 !important}
 .bloqueo-btn.activo{border-color:#8b1f1f !important;background:#fdf0f0 !important}
 .bloqueo-btn .esp-name{color:#8b1f1f}
+.stat-card{background:#f5f0e8;border-radius:10px;padding:14px 16px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:#8b6f47;line-height:1}
+.stat-label{font-size:11px;color:#888;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.dash-cal-wrap{margin-bottom:16px}
+.dash-hab-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.dash-hab-label{flex:0 0 160px;color:#555;font-size:12px}
+.dash-hab-bar{flex:1;height:16px;background:#eee;border-radius:4px;overflow:hidden}
+.dash-hab-fill{height:100%;background:#8b6f47;border-radius:4px;transition:width .3s}
+.dash-hab-pct{flex:0 0 36px;font-size:11px;color:#888;text-align:right}
+.disp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
+.disp-row:last-child{border-bottom:none}
+.disp-habs{display:flex;gap:6px;flex-wrap:wrap}
+.disp-hab{font-size:11px;padding:2px 8px;border-radius:4px}
+.disp-hab.libre{background:#e8f5e9;color:#1b5e20}
+.disp-hab.ocup{background:#ffebee;color:#b71c1c}
+.dash-mini-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px}
+.dash-mc{text-align:center;font-size:11px;padding:4px 2px;border-radius:4px}
+.dash-mc.header{font-weight:700;color:#888;font-size:10px}
+.dash-mc.libre{background:#e8f5e9;color:#1b5e20}
+.dash-mc.parcial{background:#fff3e0;color:#e65100}
+.dash-mc.lleno{background:#ffebee;color:#b71c1c}
+.dash-mc.bloqueo{background:#f3e5f5;color:#6a1b9a}
+.dash-mc.pasado{color:#ddd}
+.dash-mc.hoy{font-weight:700;box-shadow:0 0 0 2px #8b6f47}
+.dash-seccion{font-size:11px;font-weight:700;color:#8b6f47;text-transform:uppercase;letter-spacing:.05em;margin:12px 0 6px}
 </style>
 </head>
 <body>
@@ -143,6 +168,7 @@ input:focus,select:focus{border-color:#8b6f47}
     <button class="nav-tab active" id="tab-btn-reservar">+ Nueva reserva</button>
     <button class="nav-tab" id="tab-btn-mis">Mis reservas</button>
     <button class="nav-tab" id="tab-btn-admin" style="display:none">Administrar</button>
+    <button class="nav-tab" id="tab-btn-dashboard" onclick="mostrarTab('dashboard')" style="display:none">📊 Dashboard</button>
   </div>
 
   <div id="tab-reservar" class="tab-content">
@@ -187,6 +213,42 @@ input:focus,select:focus{border-color:#8b6f47}
     <div class="card">
       <h3>Mis reservas</h3>
       <div id="mis-lista"><div class="loading">Cargando...</div></div>
+    </div>
+  </div>
+
+  <div id="tab-dashboard" class="tab-content" style="display:none">
+    <div class="card">
+      <h3>📊 Resumen general</h3>
+      <div id="dash-resumen" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:8px"></div>
+    </div>
+    <div class="card">
+      <h3>📅 Calendario de ocupación</h3>
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap">
+        <div class="month-nav" style="flex:0 0 auto">
+          <button id="dash-mes-ant">&#8249;</button>
+          <span id="dash-mes-label" style="min-width:160px"></span>
+          <button id="dash-mes-sig">&#8250;</button>
+        </div>
+        <select id="dash-espacio-filter" style="width:auto;flex:1;min-width:160px;margin-bottom:0">
+          <option value="">Todos los espacios</option>
+        </select>
+      </div>
+      <div id="dash-cal"></div>
+    </div>
+    <div class="card">
+      <h3>🛏 Disponibilidad por espacio</h3>
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+        <label style="margin:0;white-space:nowrap">Desde</label>
+        <input type="date" id="dash-desde" style="width:auto;flex:1;margin-bottom:0"/>
+        <label style="margin:0;white-space:nowrap">Hasta</label>
+        <input type="date" id="dash-hasta" style="width:auto;flex:1;margin-bottom:0"/>
+        <button class="btn btn-primary btn-sm" onclick="renderDashDisponibilidad()">Ver</button>
+      </div>
+      <div id="dash-disponibilidad"></div>
+    </div>
+    <div class="card">
+      <h3>📋 Próximas reservas</h3>
+      <div id="dash-proximas"></div>
     </div>
   </div>
 
@@ -352,6 +414,198 @@ function habOcupada(espacioId, hab, desde, hasta) {
   return false;
 }
 
+var dashViewDate = new Date();
+
+function initDashboard() {
+  // Populate espacio filter
+  var sel = document.getElementById('dash-espacio-filter');
+  sel.innerHTML = '<option value="">Todos los espacios</option>';
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    var o = document.createElement('option');
+    o.value = ESPACIOS[i].id;
+    o.textContent = ESPACIOS[i].nombre;
+    sel.appendChild(o);
+  }
+  sel.addEventListener('change', renderDashCal);
+  document.getElementById('dash-mes-ant').addEventListener('click', function() {
+    dashViewDate = new Date(dashViewDate.getFullYear(), dashViewDate.getMonth()-1, 1);
+    renderDashCal();
+  });
+  document.getElementById('dash-mes-sig').addEventListener('click', function() {
+    dashViewDate = new Date(dashViewDate.getFullYear(), dashViewDate.getMonth()+1, 1);
+    renderDashCal();
+  });
+  var hoyStr = hoy();
+  document.getElementById('dash-desde').value = hoyStr;
+  var fin = new Date(); fin.setDate(fin.getDate()+30);
+  document.getElementById('dash-hasta').value = dateStr(fin);
+}
+
+function renderDashboard() {
+  renderDashResumen();
+  renderDashCal();
+  renderDashDisponibilidad();
+  renderDashProximas();
+}
+
+function renderDashResumen() {
+  var hoyStr = hoy();
+  var totalReservas = reservas.length;
+  var reservasActivas = reservas.filter(function(r) { return r.fecha_hasta >= hoyStr; }).length;
+  var bloqueos = reservas.filter(function(r) { return r.tipo === 'bloqueo' && r.fecha_hasta >= hoyStr; }).length;
+  var personas = {};
+  reservas.forEach(function(r) { if (r.fecha_hasta >= hoyStr) personas[r.user_id] = true; });
+  var numPersonas = Object.keys(personas).length;
+
+  // Total habs ocupadas hoy
+  var habsOcupadasHoy = 0;
+  var totalHabs = 0;
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    if (ESPACIOS[i].id === 'bloqueo') continue;
+    totalHabs += ESPACIOS[i].habs.length;
+    for (var j = 0; j < ESPACIOS[i].habs.length; j++) {
+      if (habOcupada(ESPACIOS[i].id, ESPACIOS[i].habs[j], hoyStr, hoyStr+'x') || diaOcupado(ESPACIOS[i].id, hoyStr)) {
+        habsOcupadasHoy++;
+        break;
+      }
+    }
+  }
+
+  document.getElementById('dash-resumen').innerHTML =
+    '<div class="stat-card"><div class="stat-num">' + totalReservas + '</div><div class="stat-label">Reservas totales</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + reservasActivas + '</div><div class="stat-label">Reservas activas</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + numPersonas + '</div><div class="stat-label">Familares con reserva</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + bloqueos + '</div><div class="stat-label">Bloqueos activos</div></div>';
+}
+
+function renderDashCal() {
+  var filter = document.getElementById('dash-espacio-filter').value;
+  var year = dashViewDate.getFullYear(), month = dashViewDate.getMonth();
+  var label = new Date(year,month,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});
+  document.getElementById('dash-mes-label').textContent = label.charAt(0).toUpperCase()+label.slice(1);
+  var daysInMonth = new Date(year,month+1,0).getDate();
+  var firstDay = (new Date(year,month,1).getDay()+6)%7;
+  var hoyStr = hoy();
+
+  var espaciosFiltro = filter ? [filter] : ESPACIOS.filter(function(e){return e.id!=='bloqueo';}).map(function(e){return e.id;});
+
+  var html = '';
+  var grupos = filter ? [filter] : ['cp','b1','b2','b3','of'];
+
+  for (var g = 0; g < grupos.length; g++) {
+    var espId = grupos[g];
+    var esp = null;
+    for (var i = 0; i < ESPACIOS.length; i++) { if (ESPACIOS[i].id === espId) { esp = ESPACIOS[i]; break; } }
+    if (!esp) continue;
+
+    html += '<div class="dash-seccion">' + esp.nombre + '</div>';
+    html += '<div class="dash-mini-cal">';
+    var dias = ['L','M','X','J','V','S','D'];
+    for (var d = 0; d < 7; d++) html += '<div class="dash-mc header">' + dias[d] + '</div>';
+    for (var i = 0; i < firstDay; i++) html += '<div class="dash-mc"></div>';
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var ds = dateStr(new Date(year,month,d));
+      var isPast = ds < hoyStr;
+      var isHoy = ds === hoyStr;
+      var esBloqueo = false;
+      for (var i = 0; i < reservas.length; i++) {
+        if (reservas[i].tipo === 'bloqueo' && reservas[i].fecha_desde <= ds && reservas[i].fecha_hasta > ds) { esBloqueo = true; break; }
+      }
+
+      var habsOcup = 0;
+      for (var h = 0; h < esp.habs.length; h++) {
+        if (habOcupada(espId, esp.habs[h], ds, ds+'x')) habsOcup++;
+      }
+      var pct = esp.habs.length > 0 ? habsOcup / esp.habs.length : 0;
+
+      var cls = 'dash-mc';
+      if (isPast) cls += ' pasado';
+      else if (esBloqueo) cls += ' bloqueo';
+      else if (pct >= 1) cls += ' lleno';
+      else if (pct > 0) cls += ' parcial';
+      else cls += ' libre';
+      if (isHoy) cls += ' hoy';
+
+      var quien = '';
+      for (var i = 0; i < reservas.length; i++) {
+        var r = reservas[i];
+        if ((r.tipo === espId || r.tipo === 'bloqueo') && r.fecha_desde <= ds && r.fecha_hasta > ds) {
+          quien += (quien ? ', ' : '') + r.nombre;
+        }
+      }
+      html += '<div class="' + cls + '" title="' + (quien||'Libre') + '">' + d + '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Leyenda
+  html += '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#666;margin-top:4px">';
+  html += '<span><span class="dot" style="background:#e8f5e9;border:1px solid #a5d6a7"></span> Libre</span>';
+  html += '<span><span class="dot" style="background:#fff3e0;border:1px solid #ffcc02"></span> Parcial</span>';
+  html += '<span><span class="dot" style="background:#ffebee;border:1px solid #ef9a9a"></span> Lleno</span>';
+  html += '<span><span class="dot" style="background:#f3e5f5;border:1px solid #ce93d8"></span> Bloqueo total</span>';
+  html += '</div>';
+
+  document.getElementById('dash-cal').innerHTML = html;
+}
+
+function renderDashDisponibilidad() {
+  var desde = document.getElementById('dash-desde').value;
+  var hasta = document.getElementById('dash-hasta').value;
+  if (!desde || !hasta) return;
+  var html = '';
+  for (var i = 0; i < ESPACIOS.length; i++) {
+    var esp = ESPACIOS[i];
+    if (esp.id === 'bloqueo') continue;
+    html += '<div class="disp-row"><div style="font-weight:600;font-size:13px;flex:0 0 130px">' + esp.nombre + '</div><div class="disp-habs">';
+    for (var j = 0; j < esp.habs.length; j++) {
+      var ocup = habOcupada(esp.id, esp.habs[j], desde, hasta) || diaOcupado(esp.id, desde);
+      var cls = ocup ? 'ocup' : 'libre';
+      html += '<span class="disp-hab ' + cls + '">' + esp.habs[j] + '</span>';
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('dash-disponibilidad').innerHTML = html || '<p style="color:#888;font-size:14px">Sin datos</p>';
+}
+
+function renderDashProximas() {
+  var hoyStr = hoy();
+  var proximas = reservas.filter(function(r) { return r.fecha_hasta >= hoyStr; })
+    .sort(function(a,b) { return a.fecha_desde.localeCompare(b.fecha_desde); })
+    .slice(0, 20);
+  if (!proximas.length) {
+    document.getElementById('dash-proximas').innerHTML = '<p style="color:#888;font-size:14px">No hay reservas proximas</p>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < proximas.length; i++) {
+    var r = proximas[i];
+    var esp = null;
+    for (var j = 0; j < ESPACIOS.length; j++) { if (ESPACIOS[j].id === r.tipo) { esp = ESPACIOS[j]; break; } }
+    var espNombre = esp ? esp.nombre : r.tipo;
+    var habs = r.rooms && r.rooms.length > 0 ? r.rooms.join(', ') : '';
+    var esHoy = r.fecha_desde <= hoyStr && r.fecha_hasta > hoyStr;
+    html += '<div class="res-item" style="' + (esHoy ? 'background:#fffbf0;border-radius:8px;padding:8px 10px;' : '') + '">';
+    html += '<div class="res-info">';
+    html += (esHoy ? '<span style="font-size:11px;background:#f59e0b;color:#fff;padding:1px 6px;border-radius:4px;margin-right:6px">HOY</span>' : '');
+    html += '<span class="chip">' + espNombre + '</span> <strong>' + r.nombre + '</strong>';
+    html += '<div class="res-meta">📅 ' + fmtDate(r.fecha_desde) + ' → ' + fmtDate(r.fecha_hasta) + '</div>';
+    if (habs) html += '<div class="res-meta">🛏 ' + habs + '</div>';
+    if (r.notas) html += '<div class="res-meta" style="font-style:italic">📝 ' + r.notas + '</div>';
+    html += '</div>';
+    html += '<button class="btn btn-danger" data-id="' + r.id + '">✕</button>';
+    html += '</div>';
+  }
+  document.getElementById('dash-proximas').innerHTML = html;
+  document.querySelectorAll('#dash-proximas .btn-danger').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      cancelarReserva(this.getAttribute('data-id'));
+      cargarReservas().then(function() { renderDashboard(); });
+    });
+  });
+}
+
 function mostrarScreen(id) {
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById('screen-' + id).classList.add('active');
@@ -368,6 +622,7 @@ function mostrarTab(id) {
   if (id === 'mis') cargarYMostrarMis();
   if (id === 'admin') { cargarYMostrarAdmin(); cargarYMostrarCreds(); }
   if (id === 'reservar') iniciarReservar();
+  if (id === 'dashboard') { cargarReservas().then(function() { renderDashboard(); }); }
 }
 
 function iniciarReservar() {
@@ -786,8 +1041,10 @@ function entrarComoUsuario(fullName, tipo) {
   var badges = { tio: '<span class="badge badge-tio">Tio/a</span>', sobrino: '<span class="badge badge-sob">Sobrino/a</span>', admin: '<span class="badge badge-admin">Admin</span>' };
   document.getElementById('ub-badge').innerHTML = badges[tipo];
   document.getElementById('tab-btn-admin').style.display = tipo === 'admin' ? '' : 'none';
+  document.getElementById('tab-btn-dashboard').style.display = tipo === 'admin' ? '' : 'none';
   mostrarScreen('main');
-  mostrarTab('reservar');
+  if (tipo === 'admin') { initDashboard(); mostrarTab('dashboard'); }
+  else mostrarTab('reservar');
   var infoEl = document.getElementById('info-normas');
   if (tipo === 'sobrino') {
     infoEl.style.display = 'block';
